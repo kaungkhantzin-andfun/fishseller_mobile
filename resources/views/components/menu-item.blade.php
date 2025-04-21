@@ -1,7 +1,7 @@
-<div {{ $attributes->merge(['class' => 'menu-item']) }}>
+<a href="{{ $url }}" {{ $attributes->merge(['class' => 'menu-item']) }}>
     <img src="{{ asset($icon) }}" alt="{{ $label }}" class="menu-icon">
     <span class="menu-label">{{ $label }}</span>
-</div>
+</a>
 
 <style>
 .menu-item {
@@ -9,9 +9,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-decoration: none;
     width: 100%;
     height: 100%;
     background-color: #5A5A5A;
+    border: 1px solid #333;
     border-radius: 8px;
     padding: 15px 10px;
     transition: background-color 0.3s ease;

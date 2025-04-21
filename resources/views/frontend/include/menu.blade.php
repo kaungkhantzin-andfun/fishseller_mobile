@@ -1,7 +1,7 @@
 <div class="menu-grid">
     <x-menu-item icon="assets/icons/fish.png" label="魚の様子" />
     <x-menu-item icon="assets/icons/youtube.png" label="外野の魚" />
-    <x-menu-item icon="assets/icons/badge.png" label="街方面格" />
+    <x-menu-item icon="assets/icons/badge.png" label="街方面格" url="{{ route('wholesale')}}" />
     <x-menu-item icon="assets/icons/shop_cart.png" label="注文" />
     <x-menu-item icon="assets/icons/calendar.png" label="予約管理" />
     <x-menu-item icon="assets/icons/megaphone.png" label="集客管理" />

@@ -1,11 +1,11 @@
-<div class=".footer-footer-menu-item">
+<a href="{{ $url }}" class="footer-menu-item">
     <div class="icon-container">
         <img src='{{ asset($icon) }}' alt='{{ $label }}' class="footer-menu-icon">
     </div>
     <div class="label-container">
         <span class="footer-menu-label">{{ $label }}</span>
     </div>
-</div>
+</a>
 
 <style>
 .footer-menu-item {
@@ -15,9 +15,9 @@
     justify-content: center;
     width: 80px;
     height: 80px;
-    border: 2px solid #005BFF;
     border-radius: 8px;
     background-color: #fff;
+    text-decoration: none;
     transition: background-color 0.3s ease;
 }
 

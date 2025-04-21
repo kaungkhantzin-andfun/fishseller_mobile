@@ -13,12 +13,14 @@ class FooterMenuItem extends Component
      */
     public $icon;
     public $label;
+    public $url;
 
 
-    public function __construct($icon, $label)
+    public function __construct($icon, $label, $url = 'javascript:void(0)')
     {
         $this->icon = $icon;
         $this->label = $label;
+        $this->url = $url;
     }
 
 

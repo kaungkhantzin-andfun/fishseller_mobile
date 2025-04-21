@@ -100,22 +100,35 @@
     </style>
 @endsection
 @section('content')
-    <div class="container">
 
-        {{-- banner image --}}
-        <img src="{{ asset('assets/images/banners/1.png') }}" alt="banner-image" class="banner-image">
+    <header>
 
-        {{-- menu --}}
-        @include('frontend.include.menu')
+        @include('frontend.include.header')
 
-        {{-- notification banner box --}}
-        <div class="notification-banner">
-            <h2 class="banner-title">新しい更新情報と割引を通知</h2>
-            <p class="banner-description">メールアドレスを入力して送信してください。<br/> 最新情報をお知らせします。</p>
-            <div class="banner-input-group">
-                <input type="email" class="banner-input" placeholder="あなたのメルマガアドレス">
-                <button class="banner-button">購読する</button>
+    </header> 
+
+    <main>
+
+        <div class="container">
+
+            {{-- banner image --}}
+            <img src="{{ asset('assets/images/banners/1.png') }}" alt="banner-image" class="banner-image">
+    
+            {{-- menu --}}
+            @include('frontend.include.menu')
+    
+            {{-- notification banner box --}}
+            <div class="notification-banner">
+                <h2 class="banner-title">新しい更新情報と割引を通知</h2>
+                <p class="banner-description">メールアドレスを入力して送信してください。<br/> 最新情報をお知らせします。</p>
+                <div class="banner-input-group">
+                    <input type="email" class="banner-input" placeholder="あなたのメルマガアドレス">
+                    <button class="banner-button">購読する</button>
+                </div>
             </div>
         </div>
-    </div>
+        
+    </main>
+
+    
 @endsection

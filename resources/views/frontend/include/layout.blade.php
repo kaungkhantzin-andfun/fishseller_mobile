@@ -13,17 +13,9 @@
     @yield('style')
 </head>
 <body>
-    <header>
 
-        @include('frontend.include.header')
-
-    </header>
-
-    <main>
-        @yield('content')
-    </main>
-
-    
+    @yield('content')
+      
 
     <footer>
 
