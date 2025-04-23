@@ -135,29 +135,30 @@
         }
     </style>
 @endsection
-
 @section('content')
     <div class="container-fluid">
+        <!-- Loading Indicator -->
+        <div id="loading" style="display: none; text-align: center; padding: 20px;">
+            <span>Loading...</span>
+        </div>
+
         <!-- Dropdowns and Buttons -->
         <div class="dropdown-section">
             <div class="dropdown-items">
                 <div class="select-box">
-                    <select id="store" class="custom-select">
-                        <option>店舗</option>
-                        <option>店舗A</option>
-                        <option>店舗B</option>
+                    <select id="market" class="custom-select">
+                        <option value="">Loading markets...</option>
                     </select>
                 </div>
                 <div>
-                    <select id="maker" class="custom-select">
-                        <option>生マイワシ</option>
-                        <option>メーカーA</option>
-                        <option>メーカーB</option>
+                    <select id="fishType" class="custom-select">
+                        <option value="">Loading fish types...</option>
                     </select>
                 </div>
+                
             </div>
             <div class="button-group">
-                <button class="custom-btn">仲買履歴</button>
+                <button id="searchButton" class="custom-btn">仲買履歴</button>
                 <button class="custom-btn">漁獲高ランキング</button>
             </div>
         </div>
@@ -166,7 +167,7 @@
         <table class="pricing-table">
             <thead>
                 <tr>
-                    <th >価格/型</th>
+                    <th>価格/型</th>
                     <th>高</th>
                     <th>中</th>
                     <th>低</th>
@@ -175,34 +176,32 @@
             <tbody>
                 <tr>
                     <td>大</td>
-                    <td class="highlight">46</td>
-                    <td class="highlight">46</td>
-                    <td class="highlight">46</td>
+                    <td class="highlight large-high"></td>
+                    <td class="highlight large-medium"></td>
+                    <td class="highlight large-low"></td>
                 </tr>
                 <tr>
                     <td>中</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="highlight medium-high"></td>
+                    <td class="highlight medium-middle"></td>
+                    <td class="highlight medium-low"></td>
                 </tr>
                 <tr>
                     <td>小</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="highlight small-high"></td>
+                    <td class="highlight small-middle"></td>
+                    <td class="highlight small-low"></td>
                 </tr>
             </tbody>
         </table>
 
         <!-- Chart -->
-        <canvas id="myChart"></canvas>
-
+        <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
+      
         <div class="dropdown-items">
             <div class="select-box">
-                <select id="store" class="custom-select">
-                    <option>期間選択</option>
-                    <option>期間選択</option>
-                    <option>期間選択</option>
+                <select id="date" class="custom-select">
+                    <option value="">Loading dates...</option>
                 </select>
             </div>
         </div>
@@ -216,65 +215,232 @@
 @endsection
 
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const data = {
-            labels: ['1.', '2.', '3.', '4.', '5.', '6.', '7.'],
-            datasets: [{
-                label: '価格 (円)',
-                data: [46, 50, 40, 45, 60, 45, 50],
-                borderColor: '#F24822',
-                backgroundColor: '#F24822',
-                tension: 0,
-                fill: false,
-                pointRadius: 5,
-                pointHoverRadius: 7,
-                pointBackgroundColor: '#F24822'
-            }]
-        };
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const chartData = {
+        labels: [
+            'Large - High', 'Large - Medium', 'Large - Low',
+            'Medium - High', 'Medium - Middle', 'Medium - Low',
+            'Small - High', 'Small - Middle', 'Small - Low'
+        ],
+        datasets: [{
+            label: '価格 (円)',
+            data: Array(9).fill(0),
+            borderColor: '#F24822',
+            backgroundColor: '#F24822',
+            tension: 0,
+            fill: false,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#F24822'
+        }]
+    };
 
-        const config = {
-            type: 'line',
-            data: data,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        enabled: true
-                    }
+    const config = {
+        type: 'line',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
                 },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: 40,
-                        max: 65,
-                        ticks: {
-                            stepSize: 5
-                        }
-                    }
+                tooltip: {
+                    enabled: true
                 }
             },
-            plugins: [{
-                id: 'dataLabelPlugin',
-                afterDatasetsDraw(chart) {
-                    const { ctx, data } = chart;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((bar, index) => {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 10000,
+                    ticks: {
+                        stepSize: 1000
+                    }
+                }
+            }
+        },
+        plugins: [{
+            id: 'dataLabelPlugin',
+            afterDatasetsDraw(chart) {
+                const { ctx, data } = chart;
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    meta.data.forEach((point, index) => {
+                        const value = dataset.data[index];
+                        if (value !== null && value !== 0) {
                             ctx.fillStyle = '#000';
                             ctx.font = '12px sans-serif';
                             ctx.textAlign = 'center';
-                            ctx.fillText(dataset.data[index], bar.x, bar.y - 10);
-                        });
+                            ctx.fillText(value, point.x, point.y - 10);
+                        }
+                    });
+                });
+            }
+        }]
+    };
+
+    const myChart = new Chart(ctx, config);
+
+    function toggleLoading(isLoading) {
+        document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+    }
+
+    function getTodayDate() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Function to populate dropdowns from APIs
+    async function populateDropdowns() {
+        try {
+            // Fetch markets
+            const marketsResponse = await axios.get('https://aquaticadventureshop.com/datacraw/market');
+            const marketSelect = document.getElementById('market');
+            marketSelect.innerHTML = '<option value="">市場を選択</option>';
+            marketsResponse.data.forEach(market => {
+                marketSelect.innerHTML += `<option value="${market}">${market}</option>`;
+            });
+
+            // Fetch fish types
+            const fishResponse = await axios.get('https://aquaticadventureshop.com/datacraw/fish');
+            const fishSelect = document.getElementById('fishType');
+            fishSelect.innerHTML = '<option value="">魚の種類を選択</option>';
+            fishResponse.data.forEach(fish => {
+                fishSelect.innerHTML += `<option value="${fish}">${fish}</option>`;
+            });
+
+            // Fetch dates
+            const datesResponse = await axios.get('https://aquaticadventureshop.com/datacraw/date');
+            const dateSelect = document.getElementById('date');
+            dateSelect.innerHTML = '<option value="">期間を選択</option>';
+            datesResponse.data.forEach(date => {
+                dateSelect.innerHTML += `<option value="${date}">${date}</option>`;
+            });
+        } catch (error) {
+            console.error('Error loading dropdown data:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load dropdown options'
+            });
+        }
+    }
+
+    // Initialize dropdowns when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        populateDropdowns();
+    });
+
+    document.getElementById('searchButton').addEventListener('click', function () {
+        const market = document.getElementById('market').value;
+        const fishType = document.getElementById('fishType').value;
+        let date = document.getElementById('date').value;
+
+        if (!market || !fishType) {
+            Swal.fire({
+                icon: 'warning',
+                title: '選択してください',
+                text: '市場と魚の種類を選択してください'
+            });
+            return;
+        }
+
+        if (!date) {
+            date = getTodayDate();
+            Swal.fire({
+                icon: 'info',
+                title: '日付が選択されていません',
+                text: `今日の日付を使用します: ${date}`,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        const params = { market, fishType, date };
+        toggleLoading(true);
+
+        axios.get('https://aquaticadventureshop.com/fetch-data-search', {
+            params,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            const data = response.data;
+            if (data.success) {
+                const category = Object.values(data.data)[0];
+                if (category && category.length > 0) {
+                    const prices = category[0].prices;
+
+                    // Update table
+                    document.querySelector('.large-high').textContent = prices.large.high ?? '';
+                    document.querySelector('.large-medium').textContent = prices.large.medium ?? '';
+                    document.querySelector('.large-low').textContent = prices.large.low_price ?? '';
+
+                    document.querySelector('.medium-high').textContent = prices.medium.high ?? '';
+                    document.querySelector('.medium-middle').textContent = prices.medium.middle_value ?? '';
+                    document.querySelector('.medium-low').textContent = prices.medium.low_price ?? '';
+
+                    document.querySelector('.small-high').textContent = prices.small.high ?? '';
+                    document.querySelector('.small-middle').textContent = prices.small.middle_value ?? '';
+                    document.querySelector('.small-low').textContent = prices.small.low_price ?? '';
+
+                    // Update chart
+                    myChart.data.datasets[0].data = [
+                        prices.large.high ?? 0,
+                        prices.large.medium ?? 0,
+                        prices.large.low_price ?? 0,
+                        prices.medium.high ?? 0,
+                        prices.medium.middle_value ?? 0,
+                        prices.medium.low_price ?? 0,
+                        prices.small.high ?? 0,
+                        prices.small.middle_value ?? 0,
+                        prices.small.low_price ?? 0
+                    ];
+                    myChart.update();
+                } else {
+                    clearTableAndChart();
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'データなし',
+                        text: '選択した条件に該当するデータが見つかりませんでした'
                     });
                 }
-            }]
-        };
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'エラー',
+                    text: data.error || 'データの取得に失敗しました'
+                });
+                clearTableAndChart();
+            }
+            toggleLoading(false);
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'エラー',
+                text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message)
+            });
+            toggleLoading(false);
+            clearTableAndChart();
+        });
+    });
 
-        new Chart(ctx, config);
-    </script>
+    function clearTableAndChart() {
+        const selectors = [
+            '.large-high', '.large-medium', '.large-low',
+            '.medium-high', '.medium-middle', '.medium-low',
+            '.small-high', '.small-middle', '.small-low'
+        ];
+        selectors.forEach(sel => document.querySelector(sel).textContent = '');
+        myChart.data.datasets[0].data = Array(9).fill(0);
+        myChart.update();
+    }
+</script>
 @endsection
