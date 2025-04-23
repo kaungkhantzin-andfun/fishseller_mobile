@@ -147,15 +147,12 @@
             <div class="dropdown-items">
                 <div class="select-box">
                     <select id="market" class="custom-select">
-                    <option value="田野畑">田野畑</option>
-                    <option value="八幡浜">八幡浜</option>
-                  
+                        <option value="">Loading markets...</option>
                     </select>
                 </div>
                 <div>
                     <select id="fishType" class="custom-select">
-                    <option value="生マイワシ">生マイワシ</option> 
-                    <option value="生マアジ">生マアジ</option> 
+                        <option value="">Loading fish types...</option>
                     </select>
                 </div>
                 
@@ -201,13 +198,10 @@
         <!-- Chart -->
         <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
       
-
-                <div class="dropdown-items">
+        <div class="dropdown-items">
             <div class="select-box">
                 <select id="date" class="custom-select">
-                <option value="2025-04-21">期間選択</option>
-                        <option value="2025-04-21">2025-04-21</option>
-                        <option value="2025-04-22">2025-04-22</option>
+                    <option value="">Loading dates...</option>
                 </select>
             </div>
         </div>
@@ -219,6 +213,7 @@
         </div>
     </div>
 @endsection
+
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -261,7 +256,7 @@
                 y: {
                     beginAtZero: true,
                     min: 0,
-                    max: 10000, // Adjust as needed
+                    max: 10000,
                     ticks: {
                         stepSize: 1000
                     }
@@ -302,17 +297,67 @@
         return `${year}-${month}-${day}`;
     }
 
+    // Function to populate dropdowns from APIs
+    async function populateDropdowns() {
+        try {
+            // Fetch markets
+            const marketsResponse = await axios.get('https://aquaticadventureshop.com/datacraw/market');
+            const marketSelect = document.getElementById('market');
+            marketSelect.innerHTML = '<option value="">市場を選択</option>';
+            marketsResponse.data.forEach(market => {
+                marketSelect.innerHTML += `<option value="${market}">${market}</option>`;
+            });
+
+            // Fetch fish types
+            const fishResponse = await axios.get('https://aquaticadventureshop.com/datacraw/fish');
+            const fishSelect = document.getElementById('fishType');
+            fishSelect.innerHTML = '<option value="">魚の種類を選択</option>';
+            fishResponse.data.forEach(fish => {
+                fishSelect.innerHTML += `<option value="${fish}">${fish}</option>`;
+            });
+
+            // Fetch dates
+            const datesResponse = await axios.get('https://aquaticadventureshop.com/datacraw/date');
+            const dateSelect = document.getElementById('date');
+            dateSelect.innerHTML = '<option value="">期間を選択</option>';
+            datesResponse.data.forEach(date => {
+                dateSelect.innerHTML += `<option value="${date}">${date}</option>`;
+            });
+        } catch (error) {
+            console.error('Error loading dropdown data:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load dropdown options'
+            });
+        }
+    }
+
+    // Initialize dropdowns when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        populateDropdowns();
+    });
+
     document.getElementById('searchButton').addEventListener('click', function () {
         const market = document.getElementById('market').value;
         const fishType = document.getElementById('fishType').value;
         let date = document.getElementById('date').value;
 
+        if (!market || !fishType) {
+            Swal.fire({
+                icon: 'warning',
+                title: '選択してください',
+                text: '市場と魚の種類を選択してください'
+            });
+            return;
+        }
+
         if (!date) {
             date = getTodayDate();
             Swal.fire({
                 icon: 'info',
-                title: 'No Date Selected',
-                text: `Using today's date: ${date}`,
+                title: '日付が選択されていません',
+                text: `今日の日付を使用します: ${date}`,
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -360,12 +405,17 @@
                     myChart.update();
                 } else {
                     clearTableAndChart();
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'データなし',
+                        text: '選択した条件に該当するデータが見つかりませんでした'
+                    });
                 }
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: data.error || 'Failed to fetch data'
+                    title: 'エラー',
+                    text: data.error || 'データの取得に失敗しました'
                 });
                 clearTableAndChart();
             }
@@ -374,8 +424,8 @@
         .catch(error => {
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'Failed to fetch data: ' + (error.response?.statusText || error.message)
+                title: 'エラー',
+                text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message)
             });
             toggleLoading(false);
             clearTableAndChart();
