@@ -84,8 +84,8 @@
     .pricing-table {
         width: 100%;
         border-collapse: separate;
-        /* border-spacing: 15px 5px; */
-        /* margin: 20px auto; */
+        border-spacing: 15px 5px; 
+         margin: 20px auto; 
         font-family: sans-serif;
     }
 
@@ -156,6 +156,10 @@
         border: 1px solid #aea9a9;
         border-radius: 0px;
     }
+    th{
+        font-size: 10px !important;
+        width: 82px;
+    }
 </style>
 @endsection
 
@@ -191,8 +195,10 @@
         </div>
     </div>
     <!-- Table -->
-    <table class="pricing-table">
-        <thead>
+    <table class="pricing-table" style="
+    font-size: 10px;
+">
+        <thead >
             <tr>
                 <th>個別偏差値</th>
                 <th>ランキング</th>

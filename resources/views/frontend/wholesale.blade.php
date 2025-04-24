@@ -137,12 +137,12 @@
 @endsection
 @section('content')
     <div class="container-fluid">
-        <!-- Loading Indicator -->
+       
         <div id="loading" style="display: none; text-align: center; padding: 20px;">
             <span>Loading...</span>
         </div>
 
-        <!-- Dropdowns and Buttons -->
+        
         <div class="dropdown-section">
             <div class="dropdown-items">
                 <div class="select-box">
@@ -155,7 +155,6 @@
                         <option value="">Loading fish types...</option>
                     </select>
                 </div>
-                
             </div>
             <div class="button-group">
                 <button id="searchButton" class="custom-btn">仲買履歴</button>
@@ -163,7 +162,7 @@
             </div>
         </div>
 
-        <!-- Table -->
+        
         <table class="pricing-table">
             <thead>
                 <tr>
@@ -184,18 +183,19 @@
                     <td>中</td>
                     <td class="highlight medium-high"></td>
                     <td class="highlight medium-middle"></td>
-                    <td class="highlight medium-low"></td>
+                    
+                    <td class="highlight small-high"></td>
                 </tr>
                 <tr>
                     <td>小</td>
-                    <td class="highlight small-high"></td>
+                    <td class="highlight medium-low"></td>
                     <td class="highlight small-middle"></td>
                     <td class="highlight small-low"></td>
                 </tr>
             </tbody>
         </table>
 
-        <!-- Chart -->
+      
         <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
       
         <div class="dropdown-items">
@@ -206,7 +206,7 @@
             </div>
         </div>
 
-        <!-- Bottom Buttons -->
+        
         <div class="wholesale-menu-section">
             <x-menu-item icon="assets/icons/shop_cart.png" label="注文" />
             <x-menu-item icon="assets/icons/cart_white.png" label="タグ付け" />
@@ -222,9 +222,9 @@
     const ctx = document.getElementById('myChart').getContext('2d');
     const chartData = {
         labels: [
-            'Large - High', 'Large - Medium', 'Large - Low',
-            'Medium - High', 'Medium - Middle', 'Medium - Low',
-            'Small - High', 'Small - Middle', 'Small - Low'
+            '1', '2', '3',
+            '4', '5', '6',
+            '7', '8', '9'
         ],
         datasets: [{
             label: '価格 (円)',
@@ -289,18 +289,10 @@
         document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
     }
 
-    function getTodayDate() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    // Function to populate dropdowns from APIs
+    
     async function populateDropdowns() {
         try {
-            // Fetch markets
+            
             const marketsResponse = await axios.get('https://aquaticadventureshop.com/datacraw/market');
             const marketSelect = document.getElementById('market');
             marketSelect.innerHTML = '<option value="">市場を選択</option>';
@@ -308,7 +300,7 @@
                 marketSelect.innerHTML += `<option value="${market}">${market}</option>`;
             });
 
-            // Fetch fish types
+          
             const fishResponse = await axios.get('https://aquaticadventureshop.com/datacraw/fish');
             const fishSelect = document.getElementById('fishType');
             fishSelect.innerHTML = '<option value="">魚の種類を選択</option>';
@@ -316,7 +308,7 @@
                 fishSelect.innerHTML += `<option value="${fish}">${fish}</option>`;
             });
 
-            // Fetch dates
+           
             const datesResponse = await axios.get('https://aquaticadventureshop.com/datacraw/date');
             const dateSelect = document.getElementById('date');
             dateSelect.innerHTML = '<option value="">期間を選択</option>';
@@ -327,13 +319,15 @@
             console.error('Error loading dropdown data:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'Failed to load dropdown options'
+                title: 'エラー',
+                text: 'ドロップダウンオプションの読み込みに失敗しました',
+                timer: 2000,
+                showConfirmButton: false
             });
         }
     }
 
-    // Initialize dropdowns when page loads
+   
     document.addEventListener('DOMContentLoaded', function() {
         populateDropdowns();
     });
@@ -341,29 +335,37 @@
     document.getElementById('searchButton').addEventListener('click', function () {
         const market = document.getElementById('market').value;
         const fishType = document.getElementById('fishType').value;
-        let date = document.getElementById('date').value;
+        const date = document.getElementById('date').value;
 
-        if (!market || !fishType) {
+        if (!market) {
             Swal.fire({
                 icon: 'warning',
-                title: '選択してください',
-                text: '市場と魚の種類を選択してください'
+                title: '市場を選択してください',
+                text: '市場を選択してください',
+                timer: 1500,
+                showConfirmButton: false
             });
             return;
         }
 
-        if (!date) {
-            date = getTodayDate();
+        if (!fishType) {
             Swal.fire({
-                icon: 'info',
-                title: '日付が選択されていません',
-                text: `今日の日付を使用します: ${date}`,
-                timer: 2000,
+                icon: 'warning',
+                title: '魚の種類を選択してください',
+                text: '魚の種類を選択してください',
+                timer: 1500,
                 showConfirmButton: false
             });
+            return;
         }
 
-        const params = { market, fishType, date };
+      
+        const params = { 
+            market,
+            fishType,
+            date: date || ''
+        };
+
         toggleLoading(true);
 
         axios.get('https://aquaticadventureshop.com/fetch-data-search', {
@@ -372,12 +374,12 @@
         })
         .then(response => {
             const data = response.data;
-            if (data.success) {
+            if (data.success && Object.values(data.data).length > 0) {
                 const category = Object.values(data.data)[0];
                 if (category && category.length > 0) {
                     const prices = category[0].prices;
 
-                    // Update table
+                    
                     document.querySelector('.large-high').textContent = prices.large.high ?? '';
                     document.querySelector('.large-medium').textContent = prices.large.medium ?? '';
                     document.querySelector('.large-low').textContent = prices.large.low_price ?? '';
@@ -390,7 +392,7 @@
                     document.querySelector('.small-middle').textContent = prices.small.middle_value ?? '';
                     document.querySelector('.small-low').textContent = prices.small.low_price ?? '';
 
-                    // Update chart
+                  
                     myChart.data.datasets[0].data = [
                         prices.large.high ?? 0,
                         prices.large.medium ?? 0,
@@ -403,32 +405,47 @@
                         prices.small.low_price ?? 0
                     ];
                     myChart.update();
+
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'データ取得成功',
+                        text: '価格データが正常に表示されました',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
                 } else {
                     clearTableAndChart();
                     Swal.fire({
                         icon: 'info',
                         title: 'データなし',
-                        text: '選択した条件に該当するデータが見つかりませんでした'
+                        text: '選択した条件に該当するデータが見つかりませんでした',
+                        timer: 1500,
+                        showConfirmButton: false
                     });
                 }
             } else {
+                clearTableAndChart();
                 Swal.fire({
                     icon: 'error',
                     title: 'エラー',
-                    text: data.error || 'データの取得に失敗しました'
+                    text: data.error || 'データの取得に失敗しました',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
-                clearTableAndChart();
             }
             toggleLoading(false);
         })
         .catch(error => {
+            clearTableAndChart();
             Swal.fire({
                 icon: 'error',
                 title: 'エラー',
-                text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message)
+                text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message),
+                timer: 2000,
+                showConfirmButton: false
             });
             toggleLoading(false);
-            clearTableAndChart();
         });
     });
 
