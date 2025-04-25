@@ -20,4 +20,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn() => view('frontend.home'))->name('home');
 Route::get('/wholesale', fn() => view('frontend.wholesale'))->name('wholesale');
 Route::get('/wholesaletable', fn() => view('frontend.wholesaletable'))->name('wholesaletable');
-// Route::get('/page6', fn() => view('frontend.page-6'))->name('wholesaletable');
+Route::get('/deviation_ranking', fn() => view('frontend.deviation_ranking'))->name('deviation_ranking');
