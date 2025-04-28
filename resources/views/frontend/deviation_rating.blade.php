@@ -71,6 +71,16 @@
         margin: 0 auto;
     }
 
+    .table-btn {
+        background-color: #5A5A5A;
+        color: white;
+        padding: 3px;
+        border-radius: 8px;
+        border: 1px solid #000;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
     .custom-btn-blue {
         background-color: #2563eb;
         color: white;
@@ -106,6 +116,25 @@
         background-color: #0d6efd;
         color: white;
         font-weight: bold;
+    }
+
+    .pricing-table td.btn-group {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        text-align: start;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        gap: 5px;
+    }
+    .pricing-table td.btn-group span {
+        min-width: 70px;
+        text-align: center;
+        border: 2px solid #ccc;
+        padding: 13px 0px;
+        text-align: center;
+        
     }
 
     .pricing-table .highlight {
@@ -190,7 +219,7 @@
             <tr>
                 <th style="font-size: 10px;">順位</th>
                 <th style="font-size: 10px;">トン数</th>
-                <th colspan="2" style="width: 137px;font-size: 10px;">市場</th>
+                <th style="width: 137px;font-size: 10px;">市場</th>
             </tr>
         </thead>
         <tbody id="rankingTableBody" style="width: 137px;font-size: 10px;">
@@ -198,13 +227,13 @@
                 <td>1</td>
                 <td>あなご</td>
                 <td>XX</td>
-                <td><button class="market-button">YY</button></td>
+
             </tr>
             <tr>
                 <td>2</td>
                 <td>xxx</td>
                 <td>XX</td>
-                <td><button class="market-button">YY</button></td>
+
             </tr>
         </tbody>
     </table>
@@ -253,7 +282,6 @@
                         <td><span class="loading-spinner"></span></td>
                         <td><span class="loading-spinner"></span></td>
                         <td><span class="loading-spinner"></span></td>
-                        <td><span class="loading-spinner"></span></td>
                     </tr>
                 `;
             }
@@ -299,8 +327,7 @@
                         <tr>
                             <td>${rank}</td>
                             <td>${item.quantity || 'N/A'}</td>
-                            <td>${item.market || 'N/A'}</td>
-                            <td class="custom-btn"><button class="market-button ">Button</button></td>
+                            <td class="btn-group"><span>${item.market || 'N/A'}</span> <button class="table-btn">Button</button></td>
                         </tr>
                     `;
                         rankingTableBody.insertAdjacentHTML('beforeend', row);
