@@ -327,7 +327,7 @@
                         <tr>
                             <td>${rank}</td>
                             <td>${item.quantity || 'N/A'}</td>
-                            <td class="btn-group"><span>${item.market || 'N/A'}</span> <button class="table-btn">Button</button></td>
+                            <td class="btn-group"><span>${item.market || 'N/A'}</span> <button class="table-btn">グラフ</button></td>
                         </tr>
                     `;
                         rankingTableBody.insertAdjacentHTML('beforeend', row);
