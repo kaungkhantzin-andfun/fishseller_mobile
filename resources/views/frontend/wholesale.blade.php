@@ -190,11 +190,12 @@
                 <td>中</td>
                 <td class="highlight medium-high"></td>
                 <td class="highlight medium-middle"></td>
-                <td class="highlight medium-low"></td>
+                <td class="highlight small-high"></td>
             </tr>
             <tr>
                 <td>小</td>
-                <td class="highlight small-high"></td>
+               
+                <td class="highlight medium-low"></td>
                 <td class="highlight small-middle"></td>
                 <td class="highlight small-low"></td>
             </tr>
