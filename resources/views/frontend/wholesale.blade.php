@@ -168,7 +168,6 @@
                 漁獲高ランキング
             </a>
         </div>
-
     </div>
     <table class="pricing-table">
         <thead>
@@ -191,7 +190,6 @@
                 <td class="highlight medium-high"></td>
                 <td class="highlight medium-middle"></td>
                 <td class="highlight small-high"></td>
-               
             </tr>
             <tr>
                 <td>小</td>
@@ -223,44 +221,80 @@
 <script>
     const ctx = document.getElementById('myChart').getContext('2d');
     const chartData = {
-        labels: [
-            '1', '2', '3',
-            '4', '5', '6',
-            '7', '8', '9'
-        ],
-        datasets: [{
-            label: '価格 (円)',
-            data: Array(9).fill(0),
-            borderColor: '#F24822',
-            backgroundColor: '#F24822',
-            tension: 0,
-            fill: false,
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            pointBackgroundColor: '#F24822'
-        }]
+        labels: ['4/21', '4/22', '4/23', '4/24', '4/25', '4/26', '4/27'],
+        datasets: [
+            {
+                label: '大',
+                data: Array(7).fill(0),
+                borderColor: '#0000FF', // Blue
+                backgroundColor: '#0000FF',
+                tension: 0,
+                fill: false,
+                pointRadius: 0, // Remove points
+                pointHoverRadius: 0, // Remove points on hover
+                pointBackgroundColor: '#0000FF',
+                borderWidth: 2
+            },
+            {
+                label: '中',
+                data: Array(7).fill(0),
+                borderColor: '#FF0000', // Red
+                backgroundColor: '#FF0000',
+                tension: 0,
+                fill: false,
+                pointRadius: 0, // Remove points
+                pointHoverRadius: 0, // Remove points on hover
+                pointBackgroundColor: '#FF0000',
+                borderWidth: 2
+            },
+            {
+                label: '小',
+                data: Array(7).fill(0),
+                borderColor: '#FFD700', // Yellow
+                backgroundColor: '#FFD700',
+                tension: 0,
+                fill: false,
+                pointRadius: 0, // Remove points
+                pointHoverRadius: 0, // Remove points on hover
+                pointBackgroundColor: '#FFD700',
+                borderWidth: 2
+            }
+        ]
     };
 
     function getDynamicChartConfig(data) {
-        const maxDataValue = Math.max(...data.filter(val => val !== null && val !== undefined), 0);
-        const buffer = maxDataValue * 0.2 || 100; // 20% buffer or 100 if max is 0
-        const yMax = Math.ceil((maxDataValue + buffer) / 100) * 100; // Round up to nearest 100
-        const stepSize = Math.ceil(yMax / 10 / 100) * 100 || 100; // Ensure reasonable stepSize
+        const allData = data.datasets.flatMap(dataset => dataset.data).filter(val => val !== null && !isNaN(val));
+        const maxDataValue = allData.length > 0 ? Math.max(...allData) : 100;
+        const buffer = maxDataValue * 0.2 || 100;
+        const yMax = Math.ceil((maxDataValue + buffer) / 100) * 100;
+        const stepSize = Math.ceil(yMax / 10 / 100) * 100 || 100;
 
         return {
             type: 'line',
-            data: chartData,
+            data: data,
             options: {
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
                     },
                     tooltip: {
                         enabled: true
                     }
                 },
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '日付'
+                        }
+                    },
                     y: {
                         beginAtZero: true,
                         min: 0,
@@ -268,33 +302,34 @@
                         ticks: {
                             stepSize: stepSize
                         },
+                        title: {
+                            display: true,
+                            text: '価格 (円)'
+                        },
                         padding: {
-                            top: 30 // Extra padding to ensure labels aren't cut off
+                            top: 30
                         }
                     }
                 },
                 layout: {
                     padding: {
-                        top: 20 // Additional layout padding for labels
+                        top: 20
                     }
                 }
             },
             plugins: [{
                 id: 'dataLabelPlugin',
                 afterDatasetsDraw(chart) {
-                    const {
-                        ctx,
-                        data
-                    } = chart;
+                    const { ctx, data } = chart;
                     chart.data.datasets.forEach((dataset, i) => {
                         const meta = chart.getDatasetMeta(i);
                         meta.data.forEach((point, index) => {
                             const value = dataset.data[index];
-                            if (value !== null && value !== 0) {
+                            if (value !== null && value !== 0 && !isNaN(value)) {
                                 ctx.fillStyle = '#000';
                                 ctx.font = '12px sans-serif';
                                 ctx.textAlign = 'center';
-                                ctx.fillText(value, point.x, point.y - 10); // Always draw above the point
+                                ctx.fillText(value, point.x, point.y - 10);
                             }
                         });
                     });
@@ -303,8 +338,8 @@
         };
     }
 
-    // Initialize chart with default data
-    let myChart = new Chart(ctx, getDynamicChartConfig(chartData.datasets[0].data));
+    // Initialize chart with empty data
+    let myChart = new Chart(ctx, getDynamicChartConfig(chartData));
 
     function toggleLoading(isLoading) {
         document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
@@ -332,6 +367,11 @@
             datesResponse.data.forEach(date => {
                 dateSelect.innerHTML += `<option value="${date}">${date}</option>`;
             });
+
+            // Add event listener for date dropdown to auto-search
+            dateSelect.addEventListener('change', function() {
+                fetchDataAndUpdateUI();
+            });
         } catch (error) {
             console.error('Error loading dropdown data:', error);
             Swal.fire({
@@ -348,7 +388,8 @@
         populateDropdowns();
     });
 
-    document.getElementById('searchButton').addEventListener('click', function() {
+    // New function to handle data fetching and UI updates
+    function fetchDataAndUpdateUI() {
         const market = document.getElementById('market').value;
         const fishType = document.getElementById('fishType').value;
         const date = document.getElementById('date').value;
@@ -376,93 +417,130 @@
         }
 
         const params = {
-            market,
-            fishType,
+            market: market || "八幡浜",
+            fishType: fishType || "生ブリ(天然：イナダ・ワラサ含)",
             date: date || ''
         };
 
         toggleLoading(true);
 
+        // Original API call for the table
         axios.get('https://aquaticadventureshop.com/fetch-data-search', {
-                params,
-                headers: {
-                    'Accept': 'application/json'
+            params,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            const data = response.data;
+            if (data.success && Object.values(data.data).length > 0) {
+                const category = Object.values(data.data)[0];
+                if (category && category.length > 0) {
+                    const prices = category[0].prices;
+
+                    document.querySelector('.large-high').textContent = prices.large.high ?? '';
+                    document.querySelector('.large-medium').textContent = prices.large.medium ?? '';
+                    document.querySelector('.large-low').textContent = prices.large.low_price ?? '';
+
+                    document.querySelector('.medium-high').textContent = prices.medium.high ?? '';
+                    document.querySelector('.medium-middle').textContent = prices.medium.middle_value ?? '';
+                    document.querySelector('.medium-low').textContent = prices.medium.low_price ?? '';
+
+                    document.querySelector('.small-high').textContent = prices.small.high ?? '';
+                    document.querySelector('.small-middle').textContent = prices.small.middle_value ?? '';
+                    document.querySelector('.small-low').textContent = prices.small.low_price ?? '';
+
+                    // Original chart update (unchanged)
+                    const newData = [
+                        prices.large.high ?? 0,
+                        prices.large.medium ?? 0,
+                        prices.large.low_price ?? 0,
+                        prices.medium.high ?? 0,
+                        prices.medium.middle_value ?? 0,
+                        prices.medium.low_price ?? 0,
+                        prices.small.high ?? 0,
+                        prices.small.middle_value ?? 0,
+                        prices.small.low_price ?? 0
+                    ];
                 }
-            })
-            .then(response => {
-                const data = response.data;
-                if (data.success && Object.values(data.data).length > 0) {
-                    const category = Object.values(data.data)[0];
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching table data:', error);
+        });
+
+        // New API call for the chart
+        axios.get('https://aquaticadventureshop.com/fetch-data-week', {
+            params,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            const data = response.data;
+            if (data.success && Object.values(data.data).length > 0) {
+                const dates = Object.keys(data.data).slice(0, 7);
+                const largeData = [];
+                const mediumData = [];
+                const smallData = [];
+
+                dates.forEach(date => {
+                    const category = data.data[date];
                     if (category && category.length > 0) {
-                        const prices = category[0].prices;
-
-                        document.querySelector('.large-high').textContent = prices.large.high ?? '';
-                        document.querySelector('.large-medium').textContent = prices.large.medium ?? '';
-                        document.querySelector('.large-low').textContent = prices.large.low_price ?? '';
-
-                        document.querySelector('.medium-high').textContent = prices.medium.high ?? '';
-                        document.querySelector('.medium-middle').textContent = prices.medium.middle_value ?? '';
-                        document.querySelector('.medium-low').textContent = prices.medium.low_price ?? '';
-
-                        document.querySelector('.small-high').textContent = prices.small.high ?? '';
-                        document.querySelector('.small-middle').textContent = prices.small.middle_value ?? '';
-                        document.querySelector('.small-low').textContent = prices.small.low_price ?? '';
-
-                        const newData = [
-                            prices.large.high ?? 0,
-                            prices.large.medium ?? 0,
-                            prices.large.low_price ?? 0,
-                            prices.medium.high ?? 0,
-                            prices.medium.middle_value ?? 0,
-                            prices.medium.low_price ?? 0,
-                            prices.small.high ?? 0,
-                            prices.small.middle_value ?? 0,
-                            prices.small.low_price ?? 0
-                        ];
-                        myChart.data.datasets[0].data = newData;
-                        myChart.destroy(); // Destroy old chart
-                        myChart = new Chart(ctx, getDynamicChartConfig(newData)); // Reinitialize with new scale
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'データ取得成功',
-                            text: '価格データが正常に表示されました',
-                            timer: 1000,
-                            showConfirmButton: false
-                        });
+                        const prices = category[0];
+                        largeData.push(parseFloat(prices.high) || 0);
+                        mediumData.push(parseFloat(prices.medium) || 0);
+                        smallData.push(parseFloat(prices.low_price) || 0);
                     } else {
-                        clearTableAndChart();
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'データなし',
-                            text: '選択した条件に該当するデータが見つかりませんでした',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
+                        largeData.push(0);
+                        mediumData.push(0);
+                        smallData.push(0);
                     }
-                } else {
-                    clearTableAndChart();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'エラー',
-                        text: data.error || 'データの取得に失敗しました',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                }
-                toggleLoading(false);
-            })
-            .catch(error => {
-                clearTableAndChart();
+                });
+
+                // Update chart data
+                chartData.labels = dates.map(date => date.split('-').slice(1).join('/'));
+                chartData.datasets[0].data = largeData; // 大 (high)
+                chartData.datasets[1].data = mediumData; // 中 (medium)
+                chartData.datasets[2].data = smallData; // 小 (low_price)
+
+                myChart.destroy();
+                myChart = new Chart(ctx, getDynamicChartConfig(chartData));
+
                 Swal.fire({
-                    icon: 'error',
-                    title: 'エラー',
-                    text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message),
-                    timer: 2000,
+                    icon: 'success',
+                    title: 'データ取得成功',
+                    text: '価格データが正常に表示されました',
+                    timer: 1000,
                     showConfirmButton: false
                 });
-                toggleLoading(false);
+            } else {
+                clearTableAndChart();
+                Swal.fire({
+                    icon: 'info',
+                    title: 'データなし',
+                    text: '選択した条件に該当するデータが見つかりませんでした',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+            toggleLoading(false);
+        })
+        .catch(error => {
+            clearTableAndChart();
+            Swal.fire({
+                icon: 'error',
+                title: 'エラー',
+                text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message),
+                timer: 2000,
+                showConfirmButton: false
             });
+            toggleLoading(false);
+        });
+    }
+
+    document.getElementById('searchButton').addEventListener('click', function() {
+        fetchDataAndUpdateUI();
     });
 
     function clearTableAndChart() {
@@ -472,9 +550,11 @@
             '.small-high', '.small-middle', '.small-low'
         ];
         selectors.forEach(sel => document.querySelector(sel).textContent = '');
-        myChart.data.datasets[0].data = Array(9).fill(0);
+        chartData.datasets.forEach(dataset => {
+            dataset.data = Array(7).fill(0);
+        });
         myChart.destroy();
-        myChart = new Chart(ctx, getDynamicChartConfig(myChart.data.datasets[0].data));
+        myChart = new Chart(ctx, getDynamicChartConfig(chartData));
     }
 </script>
 @endsection
