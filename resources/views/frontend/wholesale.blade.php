@@ -135,6 +135,10 @@
         gap: 10px;
         margin-top: 16px;
     }
+    canvas{
+    max-width: 400px !important;
+    max-height: 380px !important;
+}
 </style>
 @endsection
 
