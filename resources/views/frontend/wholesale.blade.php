@@ -24,7 +24,6 @@
         margin-bottom: 16px;
     }
 
-
     .dropdown-items div {
         width: 100%;
         max-width: 300px;
@@ -85,7 +84,6 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 15px 5px;
-        /* margin: 20px auto; */
         font-family: sans-serif;
     }
 
@@ -94,17 +92,14 @@
         border: 2px solid #ccc;
         padding: 13px;
         text-align: center;
-        /* min-width: 70px;
-            min-height: 40px; */
+        font-size: 13px; /* Set font size to 13px for all th and td */
     }
 
     .pricing-table th {
         background-color: #0d6efd;
         color: white;
         font-weight: bold;
-        font-size: 16px;
     }
-
 
     .pricing-table td:first-child {
         background-color: #0d6efd;
@@ -114,7 +109,6 @@
 
     .pricing-table .highlight {
         border: 2px solid #ccc;
-        font-size: 18px;
         font-weight: bold;
     }
 
@@ -130,8 +124,8 @@
     }
 
     canvas {
-        max-width: 350px;
-        max-height: 200px;
+        max-width: 400px; /* Increased from 350px */
+        max-height: 450px; /* Increased from 200px to match inline height */
     }
 
     .wholesale-menu-section {
@@ -143,6 +137,7 @@
     }
 </style>
 @endsection
+
 @section('content')
 <div class="container-fluid">
     <div id="loading" style="display: none; text-align: center; padding: 20px;">
@@ -199,7 +194,7 @@
             </tr>
         </tbody>
     </table>
-    <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
+    <canvas id="myChart" style="width: 100%; height: 450px;"></canvas>
     <div class="dropdown-items">
         <div class="select-box">
             <select id="date" class="custom-select">
@@ -322,7 +317,6 @@
                 afterDatasetsDraw(chart) {
                     const { ctx, data } = chart;
                     chart.data.datasets.forEach((dataset, datasetIndex) => {
-                        // Check if the dataset is visible
                         const meta = chart.getDatasetMeta(datasetIndex);
                         if (meta.hidden) return; // Skip hidden datasets
                         
@@ -380,7 +374,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'エラー',
-                text: 'ドロップダウンオプションの読み込みに失敗しました',
+                text: 'ドロップダウンオプションの読み込みに失敗しました: ' + (error.response?.statusText || error.message),
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -392,7 +386,7 @@
     });
 
     // Function to handle data fetching and UI updates
-    function fetchDataAndUpdateUI() {
+    async function fetchDataAndUpdateUI() {
         const market = document.getElementById('market').value;
         const fishType = document.getElementById('fishType').value;
         const date = document.getElementById('date').value;
@@ -427,68 +421,80 @@
 
         toggleLoading(true);
 
-        // Original API call for the table
-        axios.get('https://aquaticadventureshop.com/fetch-data-search', {
-            params,
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            const data = response.data;
-            if (data.success && Object.values(data.data).length > 0) {
-                const category = Object.values(data.data)[0];
-                if (category && category.length > 0) {
-                    const prices = category[0].prices;
+        let errorMessages = [];
+        let infoMessages = [];
+        let successMessage = '';
 
-                    document.querySelector('.large-high').textContent = prices.large.high ?? '';
-                    document.querySelector('.large-medium').textContent = prices.large.medium ?? '';
-                    document.querySelector('.large-low').textContent = prices.large.low_price ?? '';
+        try {
+            // First API call for the table
+            let tableDataLoaded = false;
+            try {
+                const tableResponse = await axios.get('https://aquaticadventureshop.com/fetch-data-search', {
+                    params,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
 
-                    document.querySelector('.medium-high').textContent = prices.medium.high ?? '';
-                    document.querySelector('.medium-middle').textContent = prices.medium.middle_value ?? '';
-                    document.querySelector('.medium-low').textContent = prices.medium.low_price ?? '';
+                const tableData = tableResponse.data;
+                if (tableData.success && Object.values(tableData.data).length > 0) {
+                    const category = Object.values(tableData.data)[0];
+                    if (category && category.length > 0) {
+                        const prices = category[0].prices;
 
-                    document.querySelector('.small-high').textContent = prices.small.high ?? '';
-                    document.querySelector('.small-middle').textContent = prices.small.middle_value ?? '';
-                    document.querySelector('.small-low').textContent = prices.small.low_price ?? '';
+                        document.querySelector('.large-high').textContent = prices.large.high ?? '';
+                        document.querySelector('.large-medium').textContent = prices.large.medium ?? '';
+                        document.querySelector('.large-low').textContent = prices.large.low_price ?? '';
 
-                    // Original chart update (unchanged)
-                    const newData = [
-                        prices.large.high ?? 0,
-                        prices.large.medium ?? 0,
-                        prices.large.low_price ?? 0,
-                        prices.medium.high ?? 0,
-                        prices.medium.middle_value ?? 0,
-                        prices.medium.low_price ?? 0,
-                        prices.small.high ?? 0,
-                        prices.small.middle_value ?? 0,
-                        prices.small.low_price ?? 0
-                    ];
+                        document.querySelector('.medium-high').textContent = prices.medium.high ?? '';
+                        document.querySelector('.medium-middle').textContent = prices.medium.middle_value ?? '';
+                        document.querySelector('.medium-low').textContent = prices.medium.low_price ?? '';
+
+                        document.querySelector('.small-high').textContent = prices.small.high ?? '';
+                        document.querySelector('.small-middle').textContent = prices.small.middle_value ?? '';
+                        document.querySelector('.small-low').textContent = prices.small.low_price ?? '';
+
+                        tableDataLoaded = true;
+                    }
                 }
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching table data:', error);
-        });
 
-        // New API call for the chart
-        axios.get('https://aquaticadventureshop.com/fetch-data-week', {
-            params,
-            headers: {
-                'Accept': 'application/json'
+                if (!tableDataLoaded) {
+                    const selectors = [
+                        '.large-high', '.large-medium', '.large-low',
+                        '.medium-high', '.medium-middle', '.medium-low',
+                        '.small-high', '.small-middle', '.small-low'
+                    ];
+                    selectors.forEach(sel => document.querySelector(sel).textContent = '');
+                    infoMessages.push('選択した条件に該当するテーブルデータが見つかりませんでした');
+                }
+            } catch (tableError) {
+                console.error('Error fetching table data:', tableError);
+                const selectors = [
+                    '.large-high', '.large-medium', '.large-low',
+                    '.medium-high', '.medium-middle', '.medium-low',
+                    '.small-high', '.small-middle', '.small-low'
+                ];
+                selectors.forEach(sel => document.querySelector(sel).textContent = '');
+                errorMessages.push('テーブルデータの取得に失敗しました: ' + (tableError.response?.statusText || tableError.message));
             }
-        })
-        .then(response => {
-            const data = response.data;
-            if (data.success && Object.values(data.data).length > 0) {
-                const dates = Object.keys(data.data).slice(0, 7);
+
+            // Second API call for the chart
+            const chartResponse = await axios.get('https://aquaticadventureshop.com/fetch-data-week', {
+                params,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const chartDataResponse = chartResponse.data;
+            if (chartDataResponse.success && Object.values(chartDataResponse.data).length > 0) {
+                const dates = Object.keys(chartDataResponse.data).slice(0, 7);
                 const largeData = [];
                 const mediumData = [];
                 const smallData = [];
 
                 dates.forEach(date => {
-                    const category = data.data[date];
+                    const category = chartDataResponse.data[date];
                     if (category && category.length > 0) {
                         const prices = category[0];
                         largeData.push(parseFloat(prices.high) || 0);
@@ -501,7 +507,6 @@
                     }
                 });
 
-                // Update chart data
                 chartData.labels = dates.map(date => date.split('-').slice(1).join('/'));
                 chartData.datasets[0].data = largeData; // 大 (high)
                 chartData.datasets[1].data = mediumData; // 中 (medium)
@@ -510,36 +515,44 @@
                 myChart.destroy();
                 myChart = new Chart(ctx, getDynamicChartConfig(chartData));
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'データ取得成功',
-                    text: '価格データが正常に表示されました',
-                    timer: 1000,
-                    showConfirmButton: false
-                });
+                successMessage = '価格データが正常に表示されました';
             } else {
                 clearTableAndChart();
+                infoMessages.push('選択した条件に該当するチャートデータが見つかりませんでした');
+            }
+        } catch (chartError) {
+            clearTableAndChart();
+            errorMessages.push('チャートデータの取得に失敗しました: ' + (chartError.response?.statusText || chartError.message));
+        } finally {
+            toggleLoading(false);
+
+            // Show only one alert based on the collected messages
+            if (errorMessages.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'エラー',
+                    text: errorMessages.join('\n'), // Combine all error messages
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else if (infoMessages.length > 0) {
                 Swal.fire({
                     icon: 'info',
                     title: 'データなし',
-                    text: '選択した条件に該当するデータが見つかりませんでした',
+                    text: infoMessages.join('\n'), // Combine all info messages
                     timer: 1500,
                     showConfirmButton: false
                 });
+            } else if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'データ取得成功',
+                    text: successMessage,
+                    timer: 1000,
+                    showConfirmButton: false
+                });
             }
-            toggleLoading(false);
-        })
-        .catch(error => {
-            clearTableAndChart();
-            Swal.fire({
-                icon: 'error',
-                title: 'エラー',
-                text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message),
-                timer: 2000,
-                showConfirmButton: false
-            });
-            toggleLoading(false);
-        });
+        }
     }
 
     document.getElementById('searchButton').addEventListener('click', function() {
