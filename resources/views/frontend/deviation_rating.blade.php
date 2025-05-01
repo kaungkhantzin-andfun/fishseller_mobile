@@ -128,13 +128,13 @@
         padding: 0;
         gap: 5px;
     }
+
     .pricing-table td.btn-group span {
         min-width: 70px;
         text-align: center;
         border: 2px solid #ccc;
         padding: 13px 0px;
         text-align: center;
-        
     }
 
     .pricing-table .highlight {
@@ -227,19 +227,17 @@
                 <td>1</td>
                 <td>あなご</td>
                 <td>XX</td>
-
             </tr>
             <tr>
                 <td>2</td>
                 <td>xxx</td>
                 <td>XX</td>
-
             </tr>
         </tbody>
     </table>
 
-    <div class="button-group">
-        <button id="loadMoreButton" class="custom-btn">もっと見る</button>
+    <div class="button-group" id="loadMoreButtonContainer">
+        <button id="loadMoreButton" class="custom-btn" style="display: none;">もっと見る</button>
     </div>
 
     <div class="wholesale-menu-section">
@@ -257,10 +255,11 @@
         const searchButton = document.getElementById('searchButton');
         const rankingTableBody = document.getElementById('rankingTableBody');
         const loadMoreButton = document.getElementById('loadMoreButton');
+        const loadMoreButtonContainer = document.getElementById('loadMoreButtonContainer');
 
         let currentPage = 1;
 
-
+        // Populate fish types dropdown
         axios.get('https://aquaticadventureshop.com/datacraw/fish')
             .then(response => {
                 const fishTypes = Array.isArray(response.data) ? response.data : [];
@@ -297,49 +296,56 @@
             }
 
             axios.get('https://aquaticadventureshop.com/datashowrating', {
-                    params: {
-                        fish_type: fishType,
-                        page: page,
-                        per_page: 10
-                    }
-                })
-                .then(response => {
-                    console.log('API response:', response.data);
-                    const data = Array.isArray(response.data) ? response.data : response.data.data || [];
+                params: {
+                    fish_type: fishType,
+                    page: page,
+                    per_page: 10
+                }
+            })
+            .then(response => {
+                console.log('API response:', response.data);
+                const data = Array.isArray(response.data) ? response.data : response.data.data || [];
+                const total = response.data.total || 0; // Extract total from response
 
+                // Remove loading rows
+                const loadingRows = rankingTableBody.querySelectorAll('.loading-row');
+                loadingRows.forEach(row => row.remove());
 
-                    const loadingRows = rankingTableBody.querySelectorAll('.loading-row');
-                    loadingRows.forEach(row => row.remove());
+                if (!append && !data.length) {
+                    rankingTableBody.innerHTML = '';
+                }
 
-                    if (!append && !data.length) {
-                        rankingTableBody.innerHTML = '';
-                    }
+                if (data.length === 0) {
+                    rankingTableBody.innerHTML = '<tr><td colspan="4">データが見つかりません</td></tr>';
+                    loadMoreButtonContainer.style.display = 'none'; // Hide button if no data
+                    return;
+                }
 
-                    if (data.length === 0) {
-                        rankingTableBody.innerHTML = '<tr><td colspan="4">データが見つかりません</td></tr>';
-                        loadMoreButton.disabled = true;
-                        return;
-                    }
-
-                    data.forEach((item, index) => {
-                        const rank = (page - 1) * 10 + index + 1;
-                        const row = `
+                // Populate table with data
+                data.forEach((item, index) => {
+                    const rank = (page - 1) * 10 + index + 1;
+                    const row = `
                         <tr>
                             <td>${rank}</td>
                             <td>${item.quantity || 'N/A'}</td>
                             <td class="btn-group"><span>${item.market || 'N/A'}</span> <button class="table-btn">グラフ</button></td>
                         </tr>
                     `;
-                        rankingTableBody.insertAdjacentHTML('beforeend', row);
-                    });
-
-                    loadMoreButton.disabled = data.length < 10;
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    rankingTableBody.innerHTML = '<tr><td colspan="4">データの取得に失敗しました</td></tr>';
-                    loadMoreButton.disabled = true;
+                    rankingTableBody.insertAdjacentHTML('beforeend', row);
                 });
+
+                // Show or hide the "Load More" button based on total
+                if (total <= 10) {
+                    loadMoreButtonContainer.style.display = 'none'; // Hide if total is 10 or less
+                } else {
+                    loadMoreButtonContainer.style.display = 'flex'; // Show if total is more than 10
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                rankingTableBody.innerHTML = '<tr><td colspan="4">データの取得に失敗しました</td></tr>';
+                loadMoreButtonContainer.style.display = 'none'; // Hide button on error
+            });
         }
 
         searchButton.addEventListener('click', () => {
@@ -352,7 +358,7 @@
             fetchData(currentPage, true);
         });
 
-
+        // Initial fetch
         fetchData(currentPage, false);
     });
 </script>
