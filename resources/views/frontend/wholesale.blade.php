@@ -321,8 +321,11 @@
                 id: 'dataLabelPlugin',
                 afterDatasetsDraw(chart) {
                     const { ctx, data } = chart;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
+                    chart.data.datasets.forEach((dataset, datasetIndex) => {
+                        // Check if the dataset is visible
+                        const meta = chart.getDatasetMeta(datasetIndex);
+                        if (meta.hidden) return; // Skip hidden datasets
+                        
                         meta.data.forEach((point, index) => {
                             const value = dataset.data[index];
                             if (value !== null && value !== 0 && !isNaN(value)) {
@@ -388,7 +391,7 @@
         populateDropdowns();
     });
 
-    // New function to handle data fetching and UI updates
+    // Function to handle data fetching and UI updates
     function fetchDataAndUpdateUI() {
         const market = document.getElementById('market').value;
         const fishType = document.getElementById('fishType').value;
