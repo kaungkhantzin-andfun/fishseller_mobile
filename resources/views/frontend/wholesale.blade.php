@@ -147,12 +147,12 @@
         <div class="dropdown-items">
             <div class="select-box">
                 <select id="market" class="custom-select">
-                    <option value="">Loading markets...</option>
+                <option value="">市場を読み込み中...</option>
                 </select>
             </div>
             <div>
                 <select id="fishType" class="custom-select">
-                    <option value="">Loading fish types...</option>
+                <option value="">魚の種類を読み込み中...</option>
                 </select>
             </div>
         </div>
