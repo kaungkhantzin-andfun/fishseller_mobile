@@ -140,9 +140,9 @@
 
 @section('content')
 <div class="container-fluid">
-    <div id="loading" style="display: none; text-align: center; padding: 20px;">
+    <!-- <div id="loading" style="display: none; text-align: center; padding: 20px;">
         <span>Loading...</span>
-    </div>
+    </div> -->
     <div class="dropdown-section">
         <div class="dropdown-items">
             <div class="select-box">
