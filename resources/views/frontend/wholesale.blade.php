@@ -141,7 +141,7 @@
 @section('content')
 <div class="container-fluid">
     <div id="loading" style="display: none; text-align: center; padding: 20px;">
-        <!-- <span>Loading...</span> -->
+        <span>読み込み中...</span>
     </div>
     <div class="dropdown-section">
         <div class="dropdown-items">
