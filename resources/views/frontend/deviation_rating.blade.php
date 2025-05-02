@@ -351,9 +351,8 @@
                         <tr>
                             <td>${rank}</td>
                             <td>${item.quantity || 'N/A'}</td>
-                            
                             <td class="market-cell">${item.market || 'N/A'}</td>
-                            <td class="table-btn-group"><button class="table-btn">グラフ</button></td>  
+                            <td class="table-btn-group"><button class="table-btn" data-market="${item.market || 'N/A'}">グラフ</button></td>  
                         </tr>
                     `;
                     rankingTableBody.insertAdjacentHTML('beforeend', row);
