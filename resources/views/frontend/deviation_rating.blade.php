@@ -171,6 +171,28 @@
         margin: 0 8px;
     }
 
+    td.market-cell {
+        width: 100px !important;
+        height: 35px !important;
+        text-align: center;
+        border: 1px solid #ccc;
+        padding: 13.5px 22px;
+        font-size: 12px;
+    }
+
+    td.table-btn-group {
+        border: 0;
+        position: relative;
+        
+    }
+
+    td.table-btn-group button {
+        position: absolute;
+        top: 50%;
+        left:-10px;
+        transform: translateY(-50%);
+    }
+
     .wholesale-menu-section {
         display: flex;
         justify-content: space-between;
@@ -218,7 +240,7 @@
             <tr>
                 <th style="font-size: 10px;">順位</th>
                 <th style="font-size: 10px;">トン数</th>
-                <th style="width: 137px; font-size: 10px;">市場</th>
+                <th colspan="2" style="width: 137px; font-size: 10px;">市場</th>
             </tr>
         </thead>
         <tbody id="rankingTableBody" style="width: 137px; font-size: 10px;">
@@ -329,7 +351,9 @@
                         <tr>
                             <td>${rank}</td>
                             <td>${item.quantity || 'N/A'}</td>
-                            <td class="btn-group"><span>${item.market || 'N/A'}</span> <button class="table-btn" data-market="${item.market || 'N/A'}">グラフ</button></td>
+                            
+                            <td class="market-cell">${item.market || 'N/A'}</td>
+                            <td class="table-btn-group"><button class="table-btn">グラフ</button></td>  
                         </tr>
                     `;
                     rankingTableBody.insertAdjacentHTML('beforeend', row);
