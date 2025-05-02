@@ -7,39 +7,40 @@
     .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 18px;
+        padding: 37px 12px 130px 12px;
     }
 
     .dropdown-section {
+        max-width: 334px;
+        max-height: 183px;
         background-color: #E6E0E9;
-        padding: 25px;
-        border-radius: 16px;
-        margin-bottom: 16px;
+        padding: 16px 18px;
+        border-radius: 15px;
+        margin: 0 auto;
+    
     }
 
     .dropdown-items {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-bottom: 16px;
     }
 
 
     .dropdown-items div {
         width: 100%;
-        max-width: 300px;
-        margin-bottom: 10px;
+        width: 240px;
+        height: 40px;
+        margin-bottom: 16px;
     }
 
-    .select-box {
-        max-width: 250px;
-    }
 
     .custom-select {
         appearance: none;
         background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path d="M0 0h10L5 5z" fill="black"/></svg>') no-repeat right 1rem center/10px 5px;
-        padding: 14px;
-        width: 100%;
+        padding: 0 14px;
+        width: 240px;
+        height: 40px;
         border: 1px solid #ccc;
         border-radius: 10px;
         font-size: 16px;
@@ -55,8 +56,7 @@
     .button-group {
         display: flex;
         justify-content: space-between;
-        gap: 10px;
-        margin-top: 16px;
+        gap: 23px;
     }
 
     .custom-btn {
@@ -65,8 +65,8 @@
         padding: 10px 0px;
         border-radius: 10px;
         border: 1px solid #000;
-        max-width: 150px;
-        min-width: 130px;
+        width: 137px;
+        height: 40px;
         font-size: 14px;
         cursor: pointer;
     }
@@ -85,38 +85,42 @@
         width: 100%;
         border-collapse: separate;
         border-spacing: 15px 5px;
-        /* margin: 20px auto; */
+        margin: 20px auto;
         font-family: sans-serif;
+        
     }
 
     .pricing-table th,
     .pricing-table td {
-        border: 2px solid #ccc;
-        padding: 13px;
+        border: 1px solid #B3B3B3;
+        padding: 13.5px;
         text-align: center;
+        width: 72px;
+        height: 34px;
+        font-size: 16px;
+        /* margin: 5px 15px; */
         /* min-width: 70px;
             min-height: 40px; */
     }
 
     .pricing-table th {
-        background-color: #0d6efd;
+        background-color: #1A69C6;
         color: white;
         font-weight: bold;
         font-size: 16px;
     }
 
 
-    .pricing-table td:first-child {
-        background-color: #0d6efd;
+    .pricing-table td:first-child , .pricing-table th:first-child {
+        background-color: #1A69C6;
         color: white;
         font-weight: bold;
     }
 
-    .pricing-table .highlight {
-        border: 2px solid #ccc;
-        font-size: 18px;
-        font-weight: bold;
+    .pricing-table th:first-child {
+        font-size: 12px;
     }
+
 
     .bottom-buttons {
         display: flex;
@@ -144,7 +148,7 @@
 </style>
 @endsection
 @section('content')
-<div class="container-fluid">
+<div class="container">
     <div id="loading" style="display: none; text-align: center; padding: 20px;">
         <span>Loading...</span>
     </div>
@@ -155,7 +159,7 @@
                     <option value="">Loading markets...</option>
                 </select>
             </div>
-            <div>
+            <div class="select-box">
                 <select id="fishType" class="custom-select">
                     <option value="">Loading fish types...</option>
                 </select>
