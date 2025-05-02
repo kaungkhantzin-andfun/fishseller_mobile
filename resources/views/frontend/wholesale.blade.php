@@ -144,25 +144,22 @@
 
 @section('content')
 <div class="container-fluid">
-    <div id="loading" style="display: none; text-align: center; padding: 20px;">
-        <span>読み込み中...</span>
-    </div>
     <div class="dropdown-section">
         <div class="dropdown-items">
             <div class="select-box">
                 <select id="market" class="custom-select">
-                <option value="">市場を読み込み中...</option>
+                    <option value="">市場を選択</option>
                 </select>
             </div>
             <div>
                 <select id="fishType" class="custom-select">
-                <option value="">魚の種類を読み込み中...</option>
+                    <option value="">魚の種類を選択</option>
                 </select>
             </div>
         </div>
         <div class="button-group" style="display: flex; gap: 10px;">
             <button id="searchButton" class="custom-btn">仲買履歴</button>
-            <a href="deviation_rating" class="custom-btn"
+            <a href="{{ route('deviation_rating') }}" class="custom-btn"
                 style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
                 漁獲高ランキング
             </a>
@@ -198,11 +195,11 @@
             </tr>
         </tbody>
     </table>
-    <canvas id="myChart" style="width: 100%; height: 450px;"></canvas>
+    <canvas id="myChart" style="width: 100%; height: 350px;"></canvas>
     <div class="dropdown-items">
         <div class="select-box">
             <select id="date" class="custom-select">
-                <option value="">Loading dates...</option>
+                <option value="">期間を選択</option>
             </select>
         </div>
     </div>
@@ -225,36 +222,36 @@
             {
                 label: '大',
                 data: Array(7).fill(0),
-                borderColor: '#0000FF', // Blue
+                borderColor: '#0000FF',
                 backgroundColor: '#0000FF',
                 tension: 0,
                 fill: false,
-                pointRadius: 0, // Remove points
-                pointHoverRadius: 0, // Remove points on hover
+                pointRadius: 0,
+                pointHoverRadius: 0,
                 pointBackgroundColor: '#0000FF',
                 borderWidth: 2
             },
             {
                 label: '中',
                 data: Array(7).fill(0),
-                borderColor: '#FF0000', // Red
+                borderColor: '#FF0000',
                 backgroundColor: '#FF0000',
                 tension: 0,
                 fill: false,
-                pointRadius: 0, // Remove points
-                pointHoverRadius: 0, // Remove points on hover
+                pointRadius: 0,
+                pointHoverRadius: 0,
                 pointBackgroundColor: '#FF0000',
                 borderWidth: 2
             },
             {
                 label: '小',
                 data: Array(7).fill(0),
-                borderColor: '#FFD700', // Yellow
+                borderColor: '#FFD700',
                 backgroundColor: '#FFD700',
                 tension: 0,
                 fill: false,
-                pointRadius: 0, // Remove points
-                pointHoverRadius: 0, // Remove points on hover
+                pointRadius: 0,
+                pointHoverRadius: 0,
                 pointBackgroundColor: '#FFD700',
                 borderWidth: 2
             }
@@ -322,8 +319,7 @@
                     const { ctx, data } = chart;
                     chart.data.datasets.forEach((dataset, datasetIndex) => {
                         const meta = chart.getDatasetMeta(datasetIndex);
-                        if (meta.hidden) return; // Skip hidden datasets
-                        
+                        if (meta.hidden) return;
                         meta.data.forEach((point, index) => {
                             const value = dataset.data[index];
                             if (value !== null && value !== 0 && !isNaN(value)) {
@@ -339,11 +335,11 @@
         };
     }
 
-    // Initialize chart with empty data
+  
     let myChart = new Chart(ctx, getDynamicChartConfig(chartData));
 
     function toggleLoading(isLoading) {
-        document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+       
     }
 
     async function populateDropdowns() {
@@ -369,10 +365,16 @@
                 dateSelect.innerHTML += `<option value="${date}">${date}</option>`;
             });
 
-            // Add event listener for date dropdown to auto-search
-            dateSelect.addEventListener('change', function() {
-                fetchDataAndUpdateUI();
-            });
+           
+            const urlParams = new URLSearchParams(window.location.search);
+            const fishTypeFromUrl = urlParams.get('fishType');
+            const marketFromUrl = urlParams.get('market');
+
+            if (fishTypeFromUrl && marketFromUrl) {
+                fishSelect.value = decodeURIComponent(fishTypeFromUrl);
+                marketSelect.value = decodeURIComponent(marketFromUrl);
+                fetchDataAndUpdateUI(); 
+            }
         } catch (error) {
             console.error('Error loading dropdown data:', error);
             Swal.fire({
@@ -389,7 +391,7 @@
         populateDropdowns();
     });
 
-    // Function to handle data fetching and UI updates
+    
     async function fetchDataAndUpdateUI() {
         const market = document.getElementById('market').value;
         const fishType = document.getElementById('fishType').value;
@@ -430,7 +432,7 @@
         let successMessage = '';
 
         try {
-            // First API call for the table
+          
             let tableDataLoaded = false;
             try {
                 const tableResponse = await axios.get('https://aquaticadventureshop.com/fetch-data-search', {
@@ -482,7 +484,7 @@
                 errorMessages.push('テーブルデータの取得に失敗しました: ' + (tableError.response?.statusText || tableError.message));
             }
 
-            // Second API call for the chart
+            
             const chartResponse = await axios.get('https://aquaticadventureshop.com/fetch-data-week', {
                 params,
                 headers: {
@@ -512,9 +514,9 @@
                 });
 
                 chartData.labels = dates.map(date => date.split('-').slice(1).join('/'));
-                chartData.datasets[0].data = largeData; // 大 (high)
-                chartData.datasets[1].data = mediumData; // 中 (medium)
-                chartData.datasets[2].data = smallData; // 小 (low_price)
+                chartData.datasets[0].data = largeData;
+                chartData.datasets[1].data = mediumData;
+                chartData.datasets[2].data = smallData;
 
                 myChart.destroy();
                 myChart = new Chart(ctx, getDynamicChartConfig(chartData));
@@ -530,12 +532,11 @@
         } finally {
             toggleLoading(false);
 
-            // Show only one alert based on the collected messages
             if (errorMessages.length > 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'エラー',
-                    text: errorMessages.join('\n'), // Combine all error messages
+                    text: errorMessages.join('\n'),
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -543,7 +544,7 @@
                 Swal.fire({
                     icon: 'info',
                     title: 'データなし',
-                    text: infoMessages.join('\n'), // Combine all info messages
+                    text: infoMessages.join('\n'),
                     timer: 1500,
                     showConfirmButton: false
                 });
