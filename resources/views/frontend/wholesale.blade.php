@@ -26,7 +26,6 @@
         align-items: center;
     }
 
-
     .dropdown-items div {
         width: 100%;
         width: 240px;
@@ -81,11 +80,20 @@
         cursor: pointer;
     }
 
+    .add-on{
+        margin-top: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #000;
+        text-align: end;
+        padding-right: 30px;
+    }
+
     .pricing-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 15px 5px;
-        margin: 20px auto;
+        margin: 2px auto;
         font-family: sans-serif;
         
     }
@@ -107,7 +115,6 @@
         background-color: #1A69C6;
         color: white;
         font-weight: bold;
-        font-size: 16px;
     }
 
 
@@ -134,8 +141,8 @@
     }
 
     canvas {
-        max-width: 350px;
-        max-height: 200px;
+        max-width: 400px; /* Increased from 350px */
+        max-height: 450px; /* Increased from 200px to match inline height */
     }
 
     .wholesale-menu-section {
@@ -145,8 +152,13 @@
         gap: 10px;
         margin-top: 16px;
     }
+    canvas{
+    max-width: 400px !important;
+    max-height: 380px !important;
+}
 </style>
 @endsection
+
 @section('content')
 <div class="container">
     <div id="loading" style="display: none; text-align: center; padding: 20px;">
@@ -156,24 +168,24 @@
         <div class="dropdown-items">
             <div class="select-box">
                 <select id="market" class="custom-select">
-                    <option value="">Loading markets...</option>
+                    <option value="">市場を選択</option>
                 </select>
             </div>
             <div class="select-box">
                 <select id="fishType" class="custom-select">
-                    <option value="">Loading fish types...</option>
+                    <option value="">魚の種類を選択</option>
                 </select>
             </div>
         </div>
         <div class="button-group" style="display: flex; gap: 10px;">
             <button id="searchButton" class="custom-btn">仲買履歴</button>
-            <a href="deviation_rating" class="custom-btn"
+            <a href="{{ route('deviation_rating') }}" class="custom-btn"
                 style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
                 漁獲高ランキング
             </a>
         </div>
-
     </div>
+    <div class="add-on">（円）</div>
     <table class="pricing-table">
         <thead>
             <tr>
@@ -194,21 +206,21 @@
                 <td>中</td>
                 <td class="highlight medium-high"></td>
                 <td class="highlight medium-middle"></td>
-                <td class="highlight medium-low"></td>
+                <td class="highlight small-high"></td>
             </tr>
             <tr>
                 <td>小</td>
-                <td class="highlight small-high"></td>
+                <td class="highlight medium-low"></td>
                 <td class="highlight small-middle"></td>
                 <td class="highlight small-low"></td>
             </tr>
         </tbody>
     </table>
-    <canvas id="myChart" style="width: 100%; height: 400px;"></canvas>
+    <canvas id="myChart" style="width: 100%; height: 350px;"></canvas>
     <div class="dropdown-items">
         <div class="select-box">
             <select id="date" class="custom-select">
-                <option value="">Loading dates...</option>
+                <option value="">期間を選択</option>
             </select>
         </div>
     </div>
@@ -226,44 +238,80 @@
 <script>
     const ctx = document.getElementById('myChart').getContext('2d');
     const chartData = {
-        labels: [
-            '1', '2', '3',
-            '4', '5', '6',
-            '7', '8', '9'
-        ],
-        datasets: [{
-            label: '価格 (円)',
-            data: Array(9).fill(0),
-            borderColor: '#F24822',
-            backgroundColor: '#F24822',
-            tension: 0,
-            fill: false,
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            pointBackgroundColor: '#F24822'
-        }]
+        labels: ['4/21', '4/22', '4/23', '4/24', '4/25', '4/26', '4/27'],
+        datasets: [
+            {
+                label: '大',
+                data: Array(7).fill(0),
+                borderColor: '#0000FF',
+                backgroundColor: '#0000FF',
+                tension: 0,
+                fill: false,
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                pointBackgroundColor: '#0000FF',
+                borderWidth: 2
+            },
+            {
+                label: '中',
+                data: Array(7).fill(0),
+                borderColor: '#FF0000',
+                backgroundColor: '#FF0000',
+                tension: 0,
+                fill: false,
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                pointBackgroundColor: '#FF0000',
+                borderWidth: 2
+            },
+            {
+                label: '小',
+                data: Array(7).fill(0),
+                borderColor: '#FFD700',
+                backgroundColor: '#FFD700',
+                tension: 0,
+                fill: false,
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                pointBackgroundColor: '#FFD700',
+                borderWidth: 2
+            }
+        ]
     };
 
     function getDynamicChartConfig(data) {
-        const maxDataValue = Math.max(...data.filter(val => val !== null && val !== undefined), 0);
-        const buffer = maxDataValue * 0.2 || 100; // 20% buffer or 100 if max is 0
-        const yMax = Math.ceil((maxDataValue + buffer) / 100) * 100; // Round up to nearest 100
-        const stepSize = Math.ceil(yMax / 10 / 100) * 100 || 100; // Ensure reasonable stepSize
+        const allData = data.datasets.flatMap(dataset => dataset.data).filter(val => val !== null && !isNaN(val));
+        const maxDataValue = allData.length > 0 ? Math.max(...allData) : 100;
+        const buffer = maxDataValue * 0.2 || 100;
+        const yMax = Math.ceil((maxDataValue + buffer) / 100) * 100;
+        const stepSize = Math.ceil(yMax / 10 / 100) * 100 || 100;
 
         return {
             type: 'line',
-            data: chartData,
+            data: data,
             options: {
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
                     },
                     tooltip: {
                         enabled: true
                     }
                 },
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '日付'
+                        }
+                    },
                     y: {
                         beginAtZero: true,
                         min: 0,
@@ -271,33 +319,35 @@
                         ticks: {
                             stepSize: stepSize
                         },
+                        title: {
+                            display: true,
+                            text: '価格 (円)'
+                        },
                         padding: {
-                            top: 30 // Extra padding to ensure labels aren't cut off
+                            top: 30
                         }
                     }
                 },
                 layout: {
                     padding: {
-                        top: 20 // Additional layout padding for labels
+                        top: 20
                     }
                 }
             },
             plugins: [{
                 id: 'dataLabelPlugin',
                 afterDatasetsDraw(chart) {
-                    const {
-                        ctx,
-                        data
-                    } = chart;
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
+                    const { ctx, data } = chart;
+                    chart.data.datasets.forEach((dataset, datasetIndex) => {
+                        const meta = chart.getDatasetMeta(datasetIndex);
+                        if (meta.hidden) return;
                         meta.data.forEach((point, index) => {
                             const value = dataset.data[index];
-                            if (value !== null && value !== 0) {
+                            if (value !== null && value !== 0 && !isNaN(value)) {
                                 ctx.fillStyle = '#000';
                                 ctx.font = '12px sans-serif';
                                 ctx.textAlign = 'center';
-                                ctx.fillText(value, point.x, point.y - 10); // Always draw above the point
+                                ctx.fillText(value, point.x, point.y - 10);
                             }
                         });
                     });
@@ -306,11 +356,11 @@
         };
     }
 
-    // Initialize chart with default data
-    let myChart = new Chart(ctx, getDynamicChartConfig(chartData.datasets[0].data));
+  
+    let myChart = new Chart(ctx, getDynamicChartConfig(chartData));
 
     function toggleLoading(isLoading) {
-        document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+       
     }
 
     async function populateDropdowns() {
@@ -335,12 +385,23 @@
             datesResponse.data.forEach(date => {
                 dateSelect.innerHTML += `<option value="${date}">${date}</option>`;
             });
+
+           
+            const urlParams = new URLSearchParams(window.location.search);
+            const fishTypeFromUrl = urlParams.get('fishType');
+            const marketFromUrl = urlParams.get('market');
+
+            if (fishTypeFromUrl && marketFromUrl) {
+                fishSelect.value = decodeURIComponent(fishTypeFromUrl);
+                marketSelect.value = decodeURIComponent(marketFromUrl);
+                fetchDataAndUpdateUI(); 
+            }
         } catch (error) {
             console.error('Error loading dropdown data:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'エラー',
-                text: 'ドロップダウンオプションの読み込みに失敗しました',
+                text: 'ドロップダウンオプションの読み込みに失敗しました: ' + (error.response?.statusText || error.message),
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -351,7 +412,8 @@
         populateDropdowns();
     });
 
-    document.getElementById('searchButton').addEventListener('click', function() {
+    
+    async function fetchDataAndUpdateUI() {
         const market = document.getElementById('market').value;
         const fishType = document.getElementById('fishType').value;
         const date = document.getElementById('date').value;
@@ -379,23 +441,31 @@
         }
 
         const params = {
-            market,
-            fishType,
+            market: market || "八幡浜",
+            fishType: fishType || "生ブリ(天然：イナダ・ワラサ含)",
             date: date || ''
         };
 
         toggleLoading(true);
 
-        axios.get('https://aquaticadventureshop.com/fetch-data-search', {
-                params,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                const data = response.data;
-                if (data.success && Object.values(data.data).length > 0) {
-                    const category = Object.values(data.data)[0];
+        let errorMessages = [];
+        let infoMessages = [];
+        let successMessage = '';
+
+        try {
+          
+            let tableDataLoaded = false;
+            try {
+                const tableResponse = await axios.get('https://aquaticadventureshop.com/fetch-data-search', {
+                    params,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const tableData = tableResponse.data;
+                if (tableData.success && Object.values(tableData.data).length > 0) {
+                    const category = Object.values(tableData.data)[0];
                     if (category && category.length > 0) {
                         const prices = category[0].prices;
 
@@ -411,61 +481,108 @@
                         document.querySelector('.small-middle').textContent = prices.small.middle_value ?? '';
                         document.querySelector('.small-low').textContent = prices.small.low_price ?? '';
 
-                        const newData = [
-                            prices.large.high ?? 0,
-                            prices.large.medium ?? 0,
-                            prices.large.low_price ?? 0,
-                            prices.medium.high ?? 0,
-                            prices.medium.middle_value ?? 0,
-                            prices.medium.low_price ?? 0,
-                            prices.small.high ?? 0,
-                            prices.small.middle_value ?? 0,
-                            prices.small.low_price ?? 0
-                        ];
-                        myChart.data.datasets[0].data = newData;
-                        myChart.destroy(); // Destroy old chart
-                        myChart = new Chart(ctx, getDynamicChartConfig(newData)); // Reinitialize with new scale
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'データ取得成功',
-                            text: '価格データが正常に表示されました',
-                            timer: 1000,
-                            showConfirmButton: false
-                        });
-                    } else {
-                        clearTableAndChart();
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'データなし',
-                            text: '選択した条件に該当するデータが見つかりませんでした',
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
+                        tableDataLoaded = true;
                     }
-                } else {
-                    clearTableAndChart();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'エラー',
-                        text: data.error || 'データの取得に失敗しました',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
                 }
-                toggleLoading(false);
-            })
-            .catch(error => {
+
+                if (!tableDataLoaded) {
+                    const selectors = [
+                        '.large-high', '.large-medium', '.large-low',
+                        '.medium-high', '.medium-middle', '.medium-low',
+                        '.small-high', '.small-middle', '.small-low'
+                    ];
+                    selectors.forEach(sel => document.querySelector(sel).textContent = '');
+                    infoMessages.push('選択した条件に該当するテーブルデータが見つかりませんでした');
+                }
+            } catch (tableError) {
+                console.error('Error fetching table data:', tableError);
+                const selectors = [
+                    '.large-high', '.large-medium', '.large-low',
+                    '.medium-high', '.medium-middle', '.medium-low',
+                    '.small-high', '.small-middle', '.small-low'
+                ];
+                selectors.forEach(sel => document.querySelector(sel).textContent = '');
+                errorMessages.push('テーブルデータの取得に失敗しました: ' + (tableError.response?.statusText || tableError.message));
+            }
+
+            
+            const chartResponse = await axios.get('https://aquaticadventureshop.com/fetch-data-week', {
+                params,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const chartDataResponse = chartResponse.data;
+            if (chartDataResponse.success && Object.values(chartDataResponse.data).length > 0) {
+                const dates = Object.keys(chartDataResponse.data).slice(0, 7);
+                const largeData = [];
+                const mediumData = [];
+                const smallData = [];
+
+                dates.forEach(date => {
+                    const category = chartDataResponse.data[date];
+                    if (category && category.length > 0) {
+                        const prices = category[0];
+                        largeData.push(parseFloat(prices.high) || 0);
+                        mediumData.push(parseFloat(prices.medium) || 0);
+                        smallData.push(parseFloat(prices.low_price) || 0);
+                    } else {
+                        largeData.push(0);
+                        mediumData.push(0);
+                        smallData.push(0);
+                    }
+                });
+
+                chartData.labels = dates.map(date => date.split('-').slice(1).join('/'));
+                chartData.datasets[0].data = largeData;
+                chartData.datasets[1].data = mediumData;
+                chartData.datasets[2].data = smallData;
+
+                myChart.destroy();
+                myChart = new Chart(ctx, getDynamicChartConfig(chartData));
+
+                successMessage = '価格データが正常に表示されました';
+            } else {
                 clearTableAndChart();
+                infoMessages.push('選択した条件に該当するチャートデータが見つかりませんでした');
+            }
+        } catch (chartError) {
+            clearTableAndChart();
+            errorMessages.push('チャートデータの取得に失敗しました: ' + (chartError.response?.statusText || chartError.message));
+        } finally {
+            toggleLoading(false);
+
+            if (errorMessages.length > 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'エラー',
-                    text: 'データの取得に失敗しました: ' + (error.response?.statusText || error.message),
+                    text: errorMessages.join('\n'),
                     timer: 2000,
                     showConfirmButton: false
                 });
-                toggleLoading(false);
-            });
+            } else if (infoMessages.length > 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'データなし',
+                    text: infoMessages.join('\n'),
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'データ取得成功',
+                    text: successMessage,
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }
+    }
+
+    document.getElementById('searchButton').addEventListener('click', function() {
+        fetchDataAndUpdateUI();
     });
 
     function clearTableAndChart() {
@@ -475,9 +592,11 @@
             '.small-high', '.small-middle', '.small-low'
         ];
         selectors.forEach(sel => document.querySelector(sel).textContent = '');
-        myChart.data.datasets[0].data = Array(9).fill(0);
+        chartData.datasets.forEach(dataset => {
+            dataset.data = Array(7).fill(0);
+        });
         myChart.destroy();
-        myChart = new Chart(ctx, getDynamicChartConfig(myChart.data.datasets[0].data));
+        myChart = new Chart(ctx, getDynamicChartConfig(chartData));
     }
 </script>
 @endsection

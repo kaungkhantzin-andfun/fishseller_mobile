@@ -7,38 +7,43 @@
     .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 18px;
+        padding: 37px 12px 130px 12px;
     }
 
     .dropdown-section {
+        max-width: 334px;
+        max-height: 183px;
         background-color: #E6E0E9;
-        padding: 25px;
-        border-radius: 16px;
-        margin-bottom: 16px;
+        padding: 42px 18px 16px 18px;
+        border-radius: 15px;
+        margin: 0 auto;
+    
     }
 
     .dropdown-items {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-bottom: 16px;
     }
 
     .dropdown-items div {
         width: 100%;
-        max-width: 300px;
-        margin-bottom: 10px;
+        width: 240px;
+        height: 40px;
+        margin-bottom: 16px;
     }
 
-    .select-box {
-        max-width: 250px;
+    .dropdown-items p {
+        margin-bottom: 5px;
     }
+
 
     .custom-select {
         appearance: none;
         background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path d="M0 0h10L5 5z" fill="black"/></svg>') no-repeat right 1rem center/10px 5px;
-        padding: 14px;
-        width: 100%;
+        padding: 0 14px;
+        width: 240px;
+        height: 40px;
         border: 1px solid #ccc;
         border-radius: 10px;
         font-size: 16px;
@@ -54,8 +59,7 @@
     .button-group {
         display: flex;
         justify-content: space-between;
-        gap: 10px;
-        margin-top: 16px;
+        gap: 23px;
     }
 
     .custom-btn {
@@ -64,11 +68,55 @@
         padding: 10px 0px;
         border-radius: 10px;
         border: 1px solid #000;
-        max-width: 150px;
-        min-width: 130px;
+        width: 137px;
+        height: 40px;
         font-size: 14px;
         cursor: pointer;
-        margin: 0 auto;
+    }
+
+    .custom-btn-blue {
+        background-color: #2563eb;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: none;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .pricing-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 15px 5px;
+        margin: 5px auto;
+        font-family: sans-serif;
+    }
+
+    .pricing-table th,
+    .pricing-table td {
+        border: 1px solid #B3B3B3;
+        padding: 13.5px;
+        text-align: center;
+        width: 72px;
+        height: 30px;
+        font-size: 16px;
+    }
+
+    .pricing-table th {
+        background-color: #1A69C6;
+        color: white;
+        font-weight: bold;
+    }
+
+
+    .pricing-table td:first-child , .pricing-table th:first-child {
+        background-color: #1A69C6;
+        color: white;
+        font-weight: bold;
+    }
+
+    .pricing-table th:first-child {
+        font-size: 12px;
     }
 
     .table-btn {
@@ -91,68 +139,26 @@
         cursor: pointer;
     }
 
-    .pricing-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 15px 5px;
-        font-family: sans-serif;
-    }
-
-    .pricing-table th,
-    .pricing-table td {
-        border: 2px solid #ccc;
-        padding: 13px;
-        text-align: center;
-    }
-
-    .pricing-table th {
-        background-color: #0d6efd;
-        color: white;
-        font-weight: bold;
-        font-size: 16px;
-    }
-
-    .pricing-table td:first-child {
-        background-color: #0d6efd;
-        color: white;
-        font-weight: bold;
-    }
-
     .pricing-table td.btn-group {
-        display: flex;
-        justify-content: start;
-        align-items: center;
+        /* display: inline-flex; */
+        /* justify-content: start; */
+        /* align-items: center; */
         text-align: start;
         border: 0;
+        border: none;
         margin: 0;
         padding: 0;
-        gap: 5px;
     }
+
     .pricing-table td.btn-group span {
-        min-width: 70px;
+        width: 98px;
+        height: 35px;
         text-align: center;
-        border: 2px solid #ccc;
-        padding: 13px 0px;
+        border: 1px solid #ccc;
+        padding: 13.5px 22px;
         text-align: center;
-        
     }
 
-    .pricing-table .highlight {
-        border: 2px solid #ccc;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .pricing-table .market-button {
-        border: none;
-        background-color: transparent;
-        font-size: 10px;
-        text-align: center;
-        cursor: pointer;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-    }
 
     .bottom-buttons {
         display: flex;
@@ -184,24 +190,17 @@
     }
 
     @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 </style>
 @endsection
 
 @section('content')
-<div class="container-fluid">
+<div class="container">
     <div class="dropdown-section">
         <div class="dropdown-items">
-            <div class="select-box" style="text-align: center;">
-                <p>魚種を選択してください</p>
-            </div>
+            <p>魚種を選択してください</p>
             <div>
                 <select id="fishType" class="custom-select">
                     <option value="生マイワシ">生マイワシ</option>
@@ -219,27 +218,26 @@
             <tr>
                 <th style="font-size: 10px;">順位</th>
                 <th style="font-size: 10px;">トン数</th>
-                <th style="width: 137px;font-size: 10px;">市場</th>
+                <th style="width: 137px; font-size: 10px;">市場</th>
             </tr>
         </thead>
-        <tbody id="rankingTableBody" style="width: 137px;font-size: 10px;">
+        <tbody id="rankingTableBody" style="width: 137px; font-size: 10px;">
             <tr>
                 <td>1</td>
                 <td>あなご</td>
-                <td>XX</td>
-
+                <td class="btn-group"><span>XX</span> <button class="table-btn">グラフ</button></td>
             </tr>
             <tr>
                 <td>2</td>
                 <td>xxx</td>
                 <td>XX</td>
-
+                <td><button class="table-btn">グラフ</button></td>
             </tr>
         </tbody>
     </table>
 
-    <div class="button-group">
-        <button id="loadMoreButton" class="custom-btn">もっと見る</button>
+    <div class="button-group" id="loadMoreButtonContainer">
+        <button id="loadMoreButton" class="custom-btn" style="display: none;">もっと見る</button>
     </div>
 
     <div class="wholesale-menu-section">
@@ -257,10 +255,11 @@
         const searchButton = document.getElementById('searchButton');
         const rankingTableBody = document.getElementById('rankingTableBody');
         const loadMoreButton = document.getElementById('loadMoreButton');
+        const loadMoreButtonContainer = document.getElementById('loadMoreButtonContainer');
 
         let currentPage = 1;
 
-
+      
         axios.get('https://aquaticadventureshop.com/datacraw/fish')
             .then(response => {
                 const fishTypes = Array.isArray(response.data) ? response.data : [];
@@ -297,49 +296,66 @@
             }
 
             axios.get('https://aquaticadventureshop.com/datashowrating', {
-                    params: {
-                        fish_type: fishType,
-                        page: page,
-                        per_page: 10
-                    }
-                })
-                .then(response => {
-                    console.log('API response:', response.data);
-                    const data = Array.isArray(response.data) ? response.data : response.data.data || [];
+                params: {
+                    fish_type: fishType,
+                    page: page,
+                    per_page: 10
+                }
+            })
+            .then(response => {
+                console.log('API response:', response.data);
+                const data = Array.isArray(response.data) ? response.data : response.data.data || [];
+                const total = response.data.total || 0;
 
+                
+                const loadingRows = rankingTableBody.querySelectorAll('.loading-row');
+                loadingRows.forEach(row => row.remove());
 
-                    const loadingRows = rankingTableBody.querySelectorAll('.loading-row');
-                    loadingRows.forEach(row => row.remove());
+                if (!append && !data.length) {
+                    rankingTableBody.innerHTML = '';
+                }
 
-                    if (!append && !data.length) {
-                        rankingTableBody.innerHTML = '';
-                    }
+                if (data.length === 0) {
+                    rankingTableBody.innerHTML = '<tr><td colspan="4">データが見つかりません</td></tr>';
+                    loadMoreButtonContainer.style.display = 'none';
+                    return;
+                }
 
-                    if (data.length === 0) {
-                        rankingTableBody.innerHTML = '<tr><td colspan="4">データが見つかりません</td></tr>';
-                        loadMoreButton.disabled = true;
-                        return;
-                    }
-
-                    data.forEach((item, index) => {
-                        const rank = (page - 1) * 10 + index + 1;
-                        const row = `
+               
+                rankingTableBody.innerHTML = ''; 
+                data.forEach((item, index) => {
+                    const rank = (page - 1) * 10 + index + 1;
+                    const row = `
                         <tr>
                             <td>${rank}</td>
                             <td>${item.quantity || 'N/A'}</td>
-                            <td class="btn-group"><span>${item.market || 'N/A'}</span> <button class="table-btn">Button</button></td>
+                            <td class="btn-group"><span>${item.market || 'N/A'}</span> <button class="table-btn" data-market="${item.market || 'N/A'}">グラフ</button></td>
                         </tr>
                     `;
-                        rankingTableBody.insertAdjacentHTML('beforeend', row);
-                    });
-
-                    loadMoreButton.disabled = data.length < 10;
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    rankingTableBody.innerHTML = '<tr><td colspan="4">データの取得に失敗しました</td></tr>';
-                    loadMoreButton.disabled = true;
+                    rankingTableBody.insertAdjacentHTML('beforeend', row);
                 });
+
+              
+                document.querySelectorAll('.table-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const market = this.getAttribute('data-market');
+                        const fishType = fishTypeSelect.value;
+                        window.location.href = `/wholesale?fishType=${encodeURIComponent(fishType)}&market=${encodeURIComponent(market)}`;
+                    });
+                });
+
+                
+                if (total <= 10) {
+                    loadMoreButtonContainer.style.display = 'none';
+                } else {
+                    loadMoreButtonContainer.style.display = 'flex';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                rankingTableBody.innerHTML = '<tr><td colspan="4">データの取得に失敗しました</td></tr>';
+                loadMoreButtonContainer.style.display = 'none';
+            });
         }
 
         searchButton.addEventListener('click', () => {
@@ -352,7 +368,7 @@
             fetchData(currentPage, true);
         });
 
-
+       
         fetchData(currentPage, false);
     });
 </script>

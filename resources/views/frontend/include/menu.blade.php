@@ -15,6 +15,14 @@
     width: 100%;
 }
 
+/* Add this to increase icon size */
+.menu-grid img, 
+.menu-grid .icon { /* Target both img tags and elements with icon class */
+    width: 40px;
+    height: 40px;
+    object-fit: contain; /* This ensures the image maintains its aspect ratio */
+}
+
 @media (max-width: 400px) {
     .menu-grid {
         grid-template-columns: repeat(3, 1fr);
