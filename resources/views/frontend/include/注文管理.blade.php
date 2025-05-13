@@ -49,7 +49,7 @@
         .dropdown-container {
             padding: 15px;
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
         }
         
         .dropdown-select {
