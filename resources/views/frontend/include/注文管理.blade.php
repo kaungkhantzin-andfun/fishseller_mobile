@@ -221,7 +221,7 @@
     
     <!-- Footer -->
     <div class="footer">
-        Copyright 2023 designed by Andium Yangon Co. Ltd
+        Copyright 2023 designed by AndFun Yangon Co. Ltd
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
