@@ -24,13 +24,11 @@
         }
 
         .header-title {
-            position: absolute;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 16px;
-            font-weight: normal;
-            margin: 0;
+            padding-left: 30px;
+			text-align: center;
+			font-size: 16px;
+			font-weight: normal;
+			margin: 0;
         }
 
         .back-arrow {
