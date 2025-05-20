@@ -272,7 +272,7 @@
             </a>
         </div>
         <div class="copyright">
-            Copyright 2025 designed by Anofun Yanmgo Co.,Ltd
+            Copyright 2025 designed by AndFun Yangon Co.,Ltd
         </div>
     </footer>
 
