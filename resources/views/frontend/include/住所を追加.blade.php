@@ -8,11 +8,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
+    <style>        body {
             font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
             line-height: 1.6;
-            background-color: #f8f9fa;
+            background-color: white;
         }
         
         .main-content-wrapper {
