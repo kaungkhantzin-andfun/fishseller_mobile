@@ -192,31 +192,118 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }        .featured-section {
+            padding: 0;
+            background-color: #f5f5f5;
+            margin-top: 0;
+            position: relative;
         }
 
-        .featured-section {
-            padding: 0 15px;
-            margin-top: 20px;
+        .featured-title {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #f5f5f5;
+            margin: 0;
         }
 
         .featured-card {
-            background-color: #f0f0f0;
-            border-radius: 8px;
-            height: 100px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: #333;
+            background-color: #fff;
+            height: 180px;
+            margin-bottom: 10px;
+            display: block;
             text-decoration: none;
             overflow: hidden;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .featured-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }        .featured-slider {
+            display: flex;
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }        .featured-slider::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+
+        .featured-slide {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+        }
+        
+        /* Shop slider styles */
+        .shop-slider-container {
+            overflow: hidden;
+        }
+        
+        .shop-slider {
+            display: flex;
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            padding: 10px 0;
+        }
+        
+        .shop-slider::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        
+        .shop-slide {
+            flex: 0 0 85%;
+            scroll-snap-align: center;
+            padding: 0 5px;
+        }
+        
+        .shop-card {
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .shop-image-container {
+            width: 100%;
+            height: 160px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+        
+        .shop-image {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+        
+        .shop-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            text-align: center;
+        }
+        
+        .shop-description {
+            font-size: 12px;
+            color: #666;
+            margin: 0;
+            line-height: 1.4;
         }
 
         .subscribe-banner {
@@ -276,14 +363,33 @@
             border-radius: 5px;
             display: inline-block;
             margin-top: 5px;
-        }
-          .big-catch-banner {
+        }          .big-catch-banner {
             margin-bottom: 0;
             padding: 0;
+            position: relative;
         }
         
         .big-catch-banner img {
             width: 100%;
+        }
+        
+        .banner-slideshow {
+            position: relative;
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        .banner-slide {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .banner-slide.showing {
+            position: relative;
+            opacity: 1;
         }
         
         .time-sale-banner {
@@ -365,7 +471,17 @@
         </a>
     </div>    <!-- Big Catch Banner -->
     <div class="big-catch-banner">
-        <img src="images/banners/1.png" alt="大漁 漁獲情報" style="width: 100%;">
+        <div class="banner-slideshow">
+            <div class="banner-slide showing">
+                <img src="images/banners/漁獲情報を毎日配信.png" alt="大漁 漁獲情報" style="width: 100%;">
+            </div>
+            <div class="banner-slide">
+                <img src="images/banners/漁獲情報を毎日配信.png" alt="大漁 バナー" style="width: 100%;">
+            </div>
+            <div class="banner-slide">
+                <img src="images/banners/漁獲情報を毎日配信.png" alt="大漁 漁獲情報" style="width: 100%;">
+            </div>
+        </div>
     </div>    <!-- Time Sale Banner -->
     <div class="time-sale-banner">
         <img src="images/main/Timesale.png" alt="タイムセール">
@@ -397,7 +513,7 @@
         </div>
         <div class="product-card">
             <div class="sale-badge">SALE</div>
-            <img src="images/products/tuna2.jpg" alt="新とれぶり" class="product-image">
+            <img src="images/products/tuna1.jpg" alt="新とれぶり" class="product-image">
             <div class="product-info">
                 <h3 class="product-name">新とれぶり</h3>
                 <div>
@@ -416,7 +532,7 @@
         </div>
         <div class="product-card">
             <div class="sale-badge">SALE</div>
-            <img src="images/products/tuna3.jpg" alt="新とれぶり" class="product-image">
+            <img src="images/products/tuna1.jpg" alt="新とれぶり" class="product-image">
             <div class="product-info">
                 <h3 class="product-name">新とれぶり</h3>
                 <div>
@@ -433,48 +549,130 @@
                 </div>
             </div>
         </div>
-    </div>    <!-- Featured Categories -->
-    <div class="section-title">
-        <span>特集企画</span>
-    </div>
-    <div class="featured-section">
-        <a href="#" class="featured-card">
-            <img src="images/products/tuna4.jpg" alt="カニ特集">
-        </a>
-        <a href="#" class="featured-card">
-            <img src="images/products/tuna5.jpg" alt="サバ">
-        </a>
-        <a href="#" class="featured-card">
-            <img src="images/products/tuna6.jpg" alt="鯛のセット">
-        </a>
-    </div>    <!-- Shop Section -->
-    <div class="section-title">
-        <span>ショップ</span>
-        <a href="#" class="see-all">すべてを見る</a>
-    </div>
-    <div class="product-grid">
-        <div class="product-card" style="display: flex; flex-direction: column; align-items: center; padding: 15px; border: none; box-shadow: none; background-color: transparent;">
-            <img src="images/main/すべての商品.png" alt="すべての商品" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px;">
-            <div class="product-name" style="text-align: center;">すべての商品</div>
+    </div>    <!-- Featured Categories -->    <div class="featured-title" style="text-align: center; padding: 10px 0; background-color: white;">
+        <img src="images/main/特集企画.png" alt="特集企画" style="height: 40px;">
+    </div>    <div class="featured-section" style="padding: 0; position: relative; background-color: #f5f5f5;">
+        <div class="featured-slider" id="featuredSlider">
+            <div class="featured-slide">
+                <a href="#" class="featured-card" style="margin: 0; height: 180px; border-radius: 0;">
+                    <img src="images/main/特集企画1.png" alt="カニ特集" style="width: 100%; height: 100%; object-fit: cover;">
+                </a>
+            </div>
+            <div class="featured-slide">
+                <a href="#" class="featured-card" style="margin: 0; height: 180px; border-radius: 0;">
+                    <img src="images/main/特集企画2.png" alt="サバ特集" style="width: 100%; height: 100%; object-fit: cover;">
+                </a>
+            </div>
+            <div class="featured-slide">
+                <a href="#" class="featured-card" style="margin: 0; height: 180px; border-radius: 0;">
+                    <img src="images/main/特集企画3.png" alt="鯛のセット" style="width: 100%; height: 100%; object-fit: cover;">
+                </a>
+            </div>
         </div>
-        <div class="product-card" style="display: flex; flex-direction: column; align-items: center; padding: 15px; border: none; box-shadow: none; background-color: transparent;">
-            <img src="images/main/すべての商品.png" alt="マグロ" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px;">
-            <div class="product-name" style="text-align: center;">マグロ</div>
-        </div>
-        <div class="product-card" style="display: flex; flex-direction: column; align-items: center; padding: 15px; border: none; box-shadow: none; background-color: transparent;">
-            <img src="images/main/すべての商品.png" alt="サーモン" style="width: 50px; height: 50px; object-fit: contain; margin-bottom: 10px;">
-            <div class="product-name" style="text-align: center;">サーモン</div>
+    </div><!-- Shop Section -->
+    <div class="section-header" style="padding: 15px 15px 10px; background-color: white;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="font-size: 18px; margin: 0; font-weight: bold;">ショップ</h2>
+            <a href="#" style="font-size: 12px; color: #666; text-decoration: none;">すべてを見る</a>
         </div>
     </div>
-
-    <!-- Footer -->    <div class="footer" style="position: relative; background-color: black; padding: 10px 0; margin-top: 10px;">
-        <div style="display: flex; justify-content: center;">
-            <div style="text-align: center; font-size: 10px; color: white;">
-                <div>Copyright 2025 designed by AndFun Yangon Co.,Ltd.</div>
+    <div class="shop-slider-container" style="background-color: white; padding: 0 15px 15px;">
+        <div class="shop-slider" id="shopSlider">
+            <div class="shop-slide">
+                <div class="shop-card">
+                    <div class="shop-image-container">
+                        <img src="images/products/blue_fish.png" alt="目利きショップ" class="shop-image">
+                    </div>
+                    <h3 class="shop-name">目利きショップ</h3>
+                    <p class="shop-description">対品質の新鮮な魚介類が豊富です！特にこの季節は鯛がおすすめ！</p>
+                </div>
+            </div>
+            <div class="shop-slide">
+                <div class="shop-card">
+                    <div class="shop-image-container">
+                        <img src="images/products/blue_fish.png" alt="目利きショップ" class="shop-image">
+                    </div>
+                    <h3 class="shop-name">目利きショップ</h3>
+                    <p class="shop-description">対品質の新鮮な魚介類が豊富です！特にこの季節は鯛がおすすめ！</p>
+                </div>
+            </div>
+            <div class="shop-slide">
+                <div class="shop-card">
+                    <div class="shop-image-container">
+                        <img src="images/products/blue_fish.png" alt="目利きショップ" class="shop-image">
+                    </div>
+                    <h3 class="shop-name">目利きショップ</h3>
+                    <p class="shop-description">対品質の新鮮な魚介類が豊富です！特にこの季節は鯛がおすすめ！</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Email Subscription Section -->
+    <div style="background-color: #333; margin: 20px 0 0 0; padding: 15px;">
+        <div style="text-align: center; font-size: 14px; color: white; margin-bottom: 10px;">
+            新しい更新情報と割引を通知
+        </div>
+        <div style="display: flex; margin: 0 15px;">
+            <input type="email" placeholder="メールアドレス" style="flex-grow: 1; padding: 8px; border: none; font-size: 14px;">
+            <button style="background-color: #e53935; color: white; border: none; padding: 8px 15px; font-size: 14px;">登録する</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background-color: #1976d2; color: white; padding: 20px 15px 10px;">
+        <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+            <a href="#" style="color: white; margin: 0 10px; text-decoration: none; font-size: 12px;">ホーム</a>
+            <a href="#" style="color: white; margin: 0 10px; text-decoration: none; font-size: 12px;">お問い合わせ</a>
+            <a href="#" style="color: white; margin: 0 10px; text-decoration: none; font-size: 12px;">プライバシーポリシー</a>
+            <a href="#" style="color: white; margin: 0 10px; text-decoration: none; font-size: 12px;">利用規約</a>
+        </div>
+        <div style="text-align: center; font-size: 10px; color: white; margin-bottom: 10px;">
+            <div>株式会社Acropany</div>
+            <div>〒917-0702</div>
+            <div>福井県小浜市上田中13-3</div>
+            <div>0550-84-6320</div>
+        </div>
+    </div>
+
+    <div style="background-color: black; color: white; text-align: center; font-size: 8px; padding: 5px 0;">
+        Copyright 2025 designed by AndFun Yangon Co.,Ltd
+    </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>    <script>
+        // Basic scroll snap functionality is handled by CSS
+        // No additional JavaScript needed for simple left/right swiping
+        
+        // Ensure the shop slider shows part of the next slide
+        document.addEventListener('DOMContentLoaded', function() {
+            const shopSlider = document.getElementById('shopSlider');
+            if (shopSlider) {
+                // Add some padding to show a glimpse of the next slide
+                const slideWidth = shopSlider.querySelector('.shop-slide').offsetWidth;
+                const containerWidth = shopSlider.offsetWidth;
+                if (slideWidth * 0.15 < containerWidth - slideWidth) {
+                    // Adjust the padding if needed
+                    shopSlider.style.paddingRight = '15px';
+                }
+            }
+            
+            // Banner slideshow functionality
+            const bannerSlides = document.querySelectorAll('.banner-slide');
+            let currentSlide = 0;
+            
+            // Function to change the banner slide
+            function nextSlide() {
+                // Remove showing class from current slide
+                bannerSlides[currentSlide].classList.remove('showing');
+                
+                // Calculate next slide index
+                currentSlide = (currentSlide + 1) % bannerSlides.length;
+                
+                // Add showing class to next slide
+                bannerSlides[currentSlide].classList.add('showing');
+            }
+            
+            // Start the slideshow with 1.5-second interval
+            setInterval(nextSlide, 1500);
+        });
+    </script>
 </body>
 </html>
