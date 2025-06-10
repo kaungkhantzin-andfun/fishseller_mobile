@@ -420,8 +420,7 @@
 <body>
     <!-- Header with Logo and Text -->
     <div class="header">
-        <div class="logo-container">
-            <img src="images/logo/fish_seller.png" alt="魚売り" class="eye-logo">
+        <div class="logo-container">            <img src="{{ asset('assets/images/logo/fish_seller.png') }}" alt="魚売り" class="eye-logo">
             <div class="header-text">
                 <div>仲買人から直接買える</div>
                 <div>鮮魚の格安通販！</div>
@@ -472,19 +471,17 @@
     </div>    <!-- Big Catch Banner -->
     <div class="big-catch-banner">
         <div class="banner-slideshow">
-            <div class="banner-slide showing">
-                <img src="images/banners/漁獲情報を毎日配信.png" alt="大漁 漁獲情報" style="width: 100%;">
+            <div class="banner-slide showing">                <img src="{{ asset('assets/images/banners/漁獲情報を毎日配信.png') }}" alt="大漁 漁獲情報" style="width: 100%;">
             </div>
             <div class="banner-slide">
-                <img src="images/banners/漁獲情報を毎日配信.png" alt="大漁 バナー" style="width: 100%;">
+                <img src="{{ asset('assets/images/banners/漁獲情報を毎日配信.png') }}" alt="大漁 バナー" style="width: 100%;">
             </div>
             <div class="banner-slide">
-                <img src="images/banners/漁獲情報を毎日配信.png" alt="大漁 漁獲情報" style="width: 100%;">
+                <img src="{{ asset('assets/images/banners/漁獲情報を毎日配信.png') }}" alt="大漁 漁獲情報" style="width: 100%;">
             </div>
         </div>
-    </div>    <!-- Time Sale Banner -->
-    <div class="time-sale-banner">
-        <img src="images/main/Timesale.png" alt="タイムセール">
+    </div>    <!-- Time Sale Banner -->    <div class="time-sale-banner">
+        <img src="{{ asset('assets/images/main/Timesale.png') }}" alt="タイムセール">
         <div style="text-align: right; padding: 5px 15px;">
             <a href="#" style="font-size: 12px; color: #666; text-decoration: none;">すべてを見る</a>
         </div>
@@ -549,23 +546,23 @@
                 </div>
             </div>
         </div>
-    </div>    <!-- Featured Categories -->    <div class="featured-title" style="text-align: center; padding: 10px 0; background-color: white;">
-        <img src="images/main/特集企画.png" alt="特集企画" style="height: 40px;">
+    </div>    <!-- Featured Categories -->        <div class="featured-title" style="text-align: center; padding: 10px 0; background-color: white;">
+        <img src="{{ asset('assets/images/main/特集企画.png') }}" alt="特集企画" style="height: 40px;">
     </div>    <div class="featured-section" style="padding: 0; position: relative; background-color: #f5f5f5;">
         <div class="featured-slider" id="featuredSlider">
             <div class="featured-slide">
                 <a href="#" class="featured-card" style="margin: 0; height: 180px; border-radius: 0;">
-                    <img src="images/main/特集企画1.png" alt="カニ特集" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ asset('assets/images/main/特集企画1.png') }}" alt="カニ特集" style="width: 100%; height: 100%; object-fit: cover;">
                 </a>
             </div>
             <div class="featured-slide">
                 <a href="#" class="featured-card" style="margin: 0; height: 180px; border-radius: 0;">
-                    <img src="images/main/特集企画2.png" alt="サバ特集" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ asset('assets/images/main/特集企画2.png') }}" alt="サバ特集" style="width: 100%; height: 100%; object-fit: cover;">
                 </a>
             </div>
             <div class="featured-slide">
                 <a href="#" class="featured-card" style="margin: 0; height: 180px; border-radius: 0;">
-                    <img src="images/main/特集企画3.png" alt="鯛のセット" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ asset('assets/images/main/特集企画3.png') }}" alt="鯛のセット" style="width: 100%; height: 100%; object-fit: cover;">
                 </a>
             </div>
         </div>
@@ -576,12 +573,11 @@
             <a href="#" style="font-size: 12px; color: #666; text-decoration: none;">すべてを見る</a>
         </div>
     </div>
-    <div class="shop-slider-container" style="background-color: white; padding: 0 15px 15px;">
-        <div class="shop-slider" id="shopSlider">
+    <div class="shop-slider-container" style="background-color: white; padding: 0 15px 15px;">        <div class="shop-slider" id="shopSlider">
             <div class="shop-slide">
                 <div class="shop-card">
                     <div class="shop-image-container">
-                        <img src="images/products/blue_fish.png" alt="目利きショップ" class="shop-image">
+                        <img src="{{ asset('assets/images/products/blue_fish.png') }}" alt="目利きショップ" class="shop-image">
                     </div>
                     <h3 class="shop-name">目利きショップ</h3>
                     <p class="shop-description">対品質の新鮮な魚介類が豊富です！特にこの季節は鯛がおすすめ！</p>
