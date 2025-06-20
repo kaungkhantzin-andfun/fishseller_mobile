@@ -25,8 +25,8 @@ class Category extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function products(): HasMany
+    public function subCategories(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(SubCategory::class);
     }
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('subject')->nullable();
             $table->text('message');
             $table->foreignId('status_id')->constrained()->restrictOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

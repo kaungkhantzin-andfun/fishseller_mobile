@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('key')->unique();
             $table->string('value');
             $table->string('type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

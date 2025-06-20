@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('category_section_id')->constrained()->restrictOnDelete();
             $table->string('name');
             $table->string('slug');
-            $table->foreignId('status_id')->constrained()->restrictOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

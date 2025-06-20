@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('usage_limit')->default(1);
             $table->foreignId('status_id')->constrained()->restrictOnDelete();
             $table->timestamp('expires_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

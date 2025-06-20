@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('street')->nullable();
             $table->string('building')->nullable();
             $table->string('phone')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

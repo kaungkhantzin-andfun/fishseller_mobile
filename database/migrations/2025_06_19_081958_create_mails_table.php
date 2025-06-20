@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('subject');
             $table->text('body');
             $table->foreignId('status_id')->constrained()->restrictOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

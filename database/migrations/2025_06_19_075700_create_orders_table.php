@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('shop_id')->constrained()->cascadeOnDelete();
             $table->foreignId('stage_id')->constrained()->restrictOnDelete();
             $table->decimal('total_price',10,2)->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

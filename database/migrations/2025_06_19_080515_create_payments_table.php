@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2)->default(0);
             $table->string('transaction_id')->nullable();
             $table->timestamp('paid_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
             $table->timestamps();
         });
     }

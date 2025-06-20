@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('rating');
             $table->text('comment')->nullable();
             $table->foreignId('status_id')->constrained()->restrictOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
