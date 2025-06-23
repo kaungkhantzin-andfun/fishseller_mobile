@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>登録フォーム</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-	<style>
+    <style>
         body {
             font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
             padding: 20px;
@@ -122,25 +124,25 @@
         <h2 class="form-title">登録</h2>
         <p class="form-subtitle">アカウントを登録して商品を購入</p>
         
-        <form>
+        <form name="register_form" id="register_form" method="POST">
             <!-- Name -->
             <div class="field-label">氏名</div>
             <div class="name-group">
-                <input type="text" class="form-control" placeholder="姓">
-                <input type="text" class="form-control" placeholder="名">
+                <input id="last_name" name="last_name" type="text" class="form-control" placeholder="姓">
+                <input id="first_name" name="first_name" type="text" class="form-control" placeholder="名">
             </div>
             
             <!-- Furigana -->
             <div class="field-label">フリガナ</div>
             <div class="furigana-group">
-                <input type="text" class="form-control" placeholder="セイ">
-                <input type="text" class="form-control" placeholder="メイ">
+                <input id="last_name" name="last_name" type="text" class="form-control" placeholder="セイ">
+                <input id="first_name" name="first_name" type="text" class="form-control" placeholder="メイ">
             </div>
             
             <!-- Postal Code -->
             <div class="field-label">郵便番号</div>
             <div class="postal-code-container">
-                <div><input type="text" class="form-control" placeholder="1234567"></div>
+                <div><input name="postal_code" type="text" class="form-control" placeholder="1234567"></div>
 				<div class="postal-code-search">  郵便番号検索
                     <div class="search-icon">
                        <i class="bi bi-box-arrow-up-right"></i>
@@ -150,37 +152,37 @@
             <!-- Address -->
             <div class="field-label">住所</div>
             <div class="address-group">
-                <input type="text" class="form-control" placeholder="都道府県">
-                <input type="text" class="form-control" placeholder="市区町村">
+                <input id="prefectures" name="prefectures" type="text" class="form-control" placeholder="都道府県">
+                <input id="municipalities" name="municipalities" type="text" class="form-control" placeholder="市区町村">
             </div>
-            <input type="text" class="form-control" placeholder="以降の住所">
-            <input type="text" class="form-control" placeholder="建物名等">
+            <input id="subsequent_addresses" name="subsequent_addresses" type="text" class="form-control" placeholder="以降の住所">
+            <input id="building_names" name="building_names" type="text" class="form-control" placeholder="建物名等">
             
             <!-- Phone -->
             <div class="field-label">電話番号</div>
             <div class="d-flex align-items-center">
-                <input type="text" class="form-control" placeholder="000">
+                <input id="ph_number1" name="phone_number" type="text" class="form-control" placeholder="000">
                 <div class="phone-divider">−</div>
-                <input type="text" class="form-control" placeholder="0000">
+                <input name="ph_number2" type="text" class="form-control" placeholder="0000">
                 <div class="phone-divider">−</div>
-                <input type="text" class="form-control" placeholder="0000">
+                <input type="text" name="ph_number3" class="form-control" placeholder="0000">
             </div>
             
             <!-- Email -->
             <div class="field-label">メールアドレス</div>
-            <input type="email" class="form-control" placeholder="xxxxx@xxx.xxx">
+            <input id="email" name="email" type="email" class="form-control" placeholder="xxxxx@xxx.xxx">
             
             <!-- Password -->
             <div class="field-label">パスワード</div>
             <div class="password-field">
-                <input type="password" class="form-control" placeholder="xxxxxxx" id="password">
+                <input name="password" type="password" class="form-control" placeholder="xxxxxxx" id="password">
                 <span class="password-toggle" data-target="password">&#128065;&#xFE0F;</span>
             </div>
             
             <!-- Confirm Password -->
             <div class="field-label">パスワード確認</div>
             <div class="password-field">
-                <input type="password" class="form-control" placeholder="xxxxxxx" id="confirm-password">
+                <input name="confirm_password" type="password" class="form-control" placeholder="xxxxxxx" id="confirm-password">
                 <span class="password-toggle" data-target="confirm-password">&#128065;&#xFE0F;</span>
             </div>
             
@@ -196,30 +198,72 @@
             </div>
             
             <!-- Submit Button -->
-            <button type="submit" class="submit-btn">登録</button>
+            <button name="submit" type="submit" class="submit-btn">登録</button>
             
             <!-- Login Link -->
             <div class="login-link">
-                すでにアカウントをお持ちですか？ <a href="#">ログイン</a>
+                すでにアカウントをお持ちですか？ <a href="{{route('login')}}">ログイン</a>
             </div>
         </form>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Toggle password visibility
-        document.querySelectorAll('.password-toggle').forEach(toggle => {
-            toggle.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.innerHTML = '&#128064;'; // Eye with line (closed eye)
-                } else {
-                    input.type = 'password';
-                    this.innerHTML = '&#128065;&#xFE0F;'; // Open eye
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $("#register_form").submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                var fullName = $('#last_name').val() + $('#first_name').val();
+                var fullFurigana = $('#last_name').val() + $('#first_name').val();
+                var phoneNumber = $('#ph_number1').val() + $('#ph_number2').val() + $('#ph_number3').val();
+                formData.append('full_name', fullName);
+                formData.append('full_furigana', fullFurigana);
+                formData.append('phone_number', phoneNumber);
+                $.ajax({
+                    url: "{{ route('register_store') }}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if (response.status == true) {
+                            window.location.href = "{{ route('login') }}";
+                        } else {
+                            if (response.message) {
+                                alert(response.message);
+                            }
+                            var errors = response.errors;
+                            var fields = [
+                                'last_name', 'first_name', 'last_name_furigana', 'first_name_furigana',
+                                'postal_code', 'prefectures', 'municipalities', 'subsequent_addresses',
+                                'building_names', 'phone_number', 'email', 'password', 'confirm_password'
+                            ];
+
+                            fields.forEach(function(field) {
+                                if (errors[field]) {
+                                    $('#' + field)
+                                        .closest('.input-box')
+                                        .find('span.invalid-feedback')
+                                        .addClass('d-block')
+                                        .html(errors[field]);
+                                } else {
+                                    $('#' + field)
+                                        .closest('.input-box')
+                                        .find('span.invalid-feedback')
+                                        .removeClass('d-block')
+                                        .html('');
+                                }
+                            });
+                        }
+                    }
+                });
             });
         });
     </script>
