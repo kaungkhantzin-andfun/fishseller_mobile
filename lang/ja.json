@@ -1,0 +1,190 @@
+{
+    "category management": "カテゴリ管理",
+    "category managements": "カテゴリ管理",
+  
+    "system management": "システム管理",
+    "system managements": "システム管理",
+  
+    "communication management": "コミュニケーション管理",
+    "communication managements": "コミュニケーション管理",
+  
+    "order management": "注文管理",
+    "order managements": "注文管理",
+  
+    "product management": "商品管理",
+    "product managements": "商品管理",
+  
+    "shop management": "店舗管理",
+    "shop managements": "店舗管理",
+  
+    "user management": "ユーザー管理",
+    "user managements": "ユーザー管理",
+  
+    "category group": "カテゴリグループ",
+    "category groups": "カテゴリグループ",
+  
+    "category": "カテゴリ",
+    "categories": "カテゴリ",
+  
+    "category section": "カテゴリセクション",
+    "category sections": "カテゴリセクション",
+  
+    "sub category": "サブカテゴリ",
+    "sub categories": "サブカテゴリ",
+  
+    "city": "市区町村",
+    "cities": "市区町村",
+  
+    "discount type": "割引タイプ",
+    "discount types": "割引タイプ",
+  
+    "payment method": "支払方法",
+    "payment methods": "支払方法",
+  
+    "prefecture": "都道府県",
+    "prefectures": "都道府県",
+  
+    "setting": "設定",
+    "settings": "設定",
+  
+    "stage": "ステージ",
+    "stages": "ステージ",
+  
+    "status": "ステータス",
+    "statuses": "ステータス",
+  
+    "contact message": "お問い合わせメッセージ",
+    "contact messages": "お問い合わせメッセージ",
+  
+    "faq": "よくある質問",
+    "faqs": "よくある質問",
+  
+    "mail": "メール",
+    "mails": "メール",
+  
+    "order": "注文",
+    "orders": "注文",
+  
+    "product": "商品",
+    "products": "商品",
+  
+    "shop": "店舗",
+    "shops": "店舗",
+  
+    "user": "ユーザー",
+    "users": "ユーザー",
+  
+    "name": "名前",
+    "names": "名前",
+  
+    "slug": "スラッグ",
+    "slugs": "スラッグ",
+  
+    "key": "キー",
+    "keys": "キー",
+  
+    "value": "値",
+    "values": "値",
+  
+    "type": "タイプ",
+    "types": "タイプ",
+  
+    "email": "メールアドレス",
+    "emails": "メールアドレス",
+  
+    "subject": "件名",
+    "subjects": "件名",
+  
+    "message": "メッセージ",
+    "messages": "メッセージ",
+  
+    "question": "質問",
+    "questions": "質問",
+  
+    "answer": "回答",
+    "answers": "回答",
+  
+    "send by": "送信者",
+    "send tos": "送信者",
+  
+    "body": "本文",
+    "bodies": "本文",
+  
+    "order by": "注文者",
+    "order bys": "注文者",
+  
+    "total price": "合計金額",
+    "total prices": "合計金額",
+  
+    "owner": "所有者",
+    "owners": "所有者",
+  
+    "description": "説明",
+    "descriptions": "説明",
+  
+    "logo": "ロゴ",
+    "logos": "ロゴ",
+  
+    "phone": "電話番号",
+    "phones": "電話番号",
+  
+    "address": "住所",
+    "addresses": "住所",
+  
+    "avatar": "アバター",
+    "avatars": "アバター",
+  
+    "image": "画像",
+    "images": "画像",
+  
+    "price": "価格",
+    "prices": "価格",
+  
+    "quantity": "数量",
+    "quantities": "数量",
+  
+    "review by": "レビュー者",
+    "review bys": "レビュー者",
+  
+    "comment": "コメント",
+    "comments": "コメント",
+  
+    "rating": "評価",
+    "ratings": "評価",
+  
+    "payment": "支払い",
+    "payments": "支払い",
+  
+    "amount": "金額",
+    "amounts": "金額",
+  
+    "transaction id": "取引ID",
+    "transaction ids": "取引ID",
+  
+    "paid at": "支払日",
+    "paid ats": "支払日",
+  
+    "postal code": "郵便番号",
+    "postal codes": "郵便番号",
+  
+    "street": "通り",
+    "streets": "通り",
+  
+    "building": "建物",
+    "buildings": "建物",
+  
+    "discount": "割引",
+    "discounts": "割引",
+  
+    "usage limit": "使用制限",
+    "usage limits": "使用制限",
+  
+    "expires at": "有効期限",
+    "expires ats": "有効期限",
+  
+    "subscribe": "購読",
+    "subscribes": "購読",
+  
+    "created at": "作成日",
+    "updated at": "更新日"
+}

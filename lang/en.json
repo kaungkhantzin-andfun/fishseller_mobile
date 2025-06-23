@@ -1,0 +1,191 @@
+{
+    "category management": "Category Management",
+    "category managements": "Category Managements",
+  
+    "system management": "System Management",
+    "system managements": "System Managements",
+  
+    "communication management": "Communication Management",
+    "communication managements": "Communication Managements",
+  
+    "order management": "Order Management",
+    "order managements": "Order Managements",
+  
+    "product management": "Product Management",
+    "product managements": "Product Managements",
+  
+    "shop management": "Shop Management",
+    "shop managements": "Shop Managements",
+  
+    "user management": "User Management",
+    "user managements": "User Managements",
+  
+    "category group": "Category Group",
+    "category groups": "Category Groups",
+  
+    "category": "Category",
+    "categories": "Categories",
+  
+    "category section": "Category Section",
+    "category sections": "Category Sections",
+  
+    "sub category": "Sub Category",
+    "sub categories": "Sub Categories",
+  
+    "city": "City",
+    "cities": "Cities",
+  
+    "discount type": "Discount Type",
+    "discount types": "Discount Types",
+  
+    "payment method": "Payment Method",
+    "payment methods": "Payment Methods",
+  
+    "prefecture": "Prefecture",
+    "prefectures": "Prefectures",
+  
+    "setting": "Setting",
+    "settings": "Settings",
+  
+    "stage": "Stage",
+    "stages": "Stages",
+  
+    "status": "Status",
+    "statuses": "Statuses",
+  
+    "contact message": "Contact Message",
+    "contact messages": "Contact Messages",
+  
+    "faq": "Faq",
+    "faqs": "Faqs",
+  
+    "mail": "Mail",
+    "mails": "Mails",
+  
+    "order": "Order",
+    "orders": "Orders",
+  
+    "product": "Product",
+    "products": "Products",
+  
+    "shop": "Shop",
+    "shops": "Shops",
+  
+    "user": "User",
+    "users": "Users",
+  
+    "name": "Name",
+    "names": "Names",
+  
+    "slug": "Slug",
+    "slugs": "Slugs",
+  
+    "key": "Key",
+    "keys": "Keys",
+  
+    "value": "Value",
+    "values": "Values",
+  
+    "type": "Type",
+    "types": "Types",
+  
+    "email": "Email",
+    "emails": "Emails",
+  
+    "subject": "Subject",
+    "subjects": "Subjects",
+  
+    "message": "Message",
+    "messages": "Messages",
+  
+    "question": "Question",
+    "questions": "Questions",
+  
+    "answer": "Answer",
+    "answers": "Answers",
+  
+    "send by": "Send By",
+    "send tos": "Send Tos",
+  
+    "body": "Body",
+    "bodies": "Bodies",
+  
+    "order by": "Order By",
+    "order bys": "Order Bys",
+  
+    "total price": "Total Price",
+    "total prices": "Total Prices",
+  
+    "owner": "Owner",
+    "owners": "Owners",
+  
+    "description": "Description",
+    "descriptions": "Descriptions",
+  
+    "logo": "Logo",
+    "logos": "Logos",
+  
+    "phone": "Phone",
+    "phones": "Phones",
+  
+    "address": "Address",
+    "addresses": "Addresses",
+  
+    "avatar": "Avatar",
+    "avatars": "Avatars",
+  
+    "image": "Image",
+    "images": "Images",
+  
+    "price": "Price",
+    "prices": "Prices",
+  
+    "quantity": "Quantity",
+    "quantities": "Quantities",
+  
+    "review by": "Review By",
+    "review bys": "Review Bys",
+  
+    "comment": "Comment",
+    "comments": "Comments",
+  
+    "rating": "Rating",
+    "ratings": "Ratings",
+  
+    "payment": "Payment",
+    "payments": "Payments",
+  
+    "amount": "Amount",
+    "amounts": "Amounts",
+  
+    "transaction id": "Transaction Id",
+    "transaction ids": "Transaction Ids",
+  
+    "paid at": "Paid At",
+    "paid ats": "Paid Ats",
+  
+    "postal code": "Postal Code",
+    "postal codes": "Postal Codes",
+  
+    "street": "Street",
+    "streets": "Streets",
+  
+    "building": "Building",
+    "buildings": "Buildings",
+  
+    "discount": "Discount",
+    "discounts": "Discounts",
+  
+    "usage limit": "Usage Limit",
+    "usage limits": "Usage Limits",
+  
+    "expires at": "Expires At",
+    "expires ats": "Expires Ats",
+  
+    "subscribe": "Subscribe",
+    "subscribes": "Subscribes",
+  
+    "created at": "Created At",
+    "updated at": "Updated At"
+}
+  
