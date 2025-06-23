@@ -13,7 +13,9 @@ class EditSubCategory extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->disabled(fn ($record) => $record->products()->exists())
+                ->hidden(fn ($record) => $record->products()->exists()),
         ];
     }
 }

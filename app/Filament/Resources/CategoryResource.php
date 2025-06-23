@@ -4,11 +4,14 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Infolists;
 use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Concerns\InteractsWithForms;
 use App\Filament\Resources\CategoryResource\Pages;
@@ -34,7 +37,7 @@ class CategoryResource extends Resource
                     ->maxLength(255)
                     ->afterStateUpdated(function ($state, callable $set) {
                         $set('slug', Str::slug($state));
-                    })->columnSpan(2),
+                    }),
                 Forms\Components\Select::make('category_section_id')
                     ->label(__('category section'))
                     ->relationship('categorySection', 'name')
@@ -74,23 +77,64 @@ class CategoryResource extends Resource
                     ->relationship('categorySection', 'name'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()->disabled(function ($record) {
-                    return $record->subCategories()->exists();
-                }),
+                Tables\Actions\DeleteAction::make()
+                    ->disabled(fn ($record) => $record->subCategories()->exists())
+                    ->hidden(fn ($record) => $record->subCategories()->exists()),
                 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records, $action) {
+                            // Check if any record has related categorySections
+                            $hasRelated = $records->some(fn ($record) => $record->subCategories()->exists());
+            
+                            if ($hasRelated) {
+                                Notification::make()
+                                    ->title('Cannot delete')
+                                    ->body('One or more selected categories have related sub categories.')
+                                    ->danger()
+                                    ->send();
+            
+                                // Cancel the delete action
+                                $action->cancel();
+                            }
+                        }),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {   
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name')
+                            ->label(__('name'))
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('slug')
+                            ->label(__('slug'))
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label(__('created at'))
+                            ->dateTime()
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->label(__('updated at'))
+                            ->dateTime()
+                            ->inlineLabel(),
+                    ]),
+
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            
+            RelationManagers\SubCategoriesRelationManager::class,
         ];
     }
 
@@ -99,7 +143,9 @@ class CategoryResource extends Resource
         return [
             'index' => Pages\ListCategories::route('/'),
             // 'create' => Pages\CreateCategory::route('/create'),
-            // 'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'view' => Pages\ViewCategory::route('/{record}'),
+
         ];
     }
 

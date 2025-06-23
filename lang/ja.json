@@ -186,5 +186,17 @@
     "subscribes": "購読",
   
     "created at": "作成日",
-    "updated at": "更新日"
+    "updated at": "更新日",
+    "deleted at": "削除日",
+
+    "click to deactivate": "非アクティブにする",
+    "click to activate": "アクティブにする",
+
+    "active":"アクティブ",
+    "inactive":"非アクティブ",
+
+    "related category sections":"関連カテゴリセクション",
+
+    "back to list":"一覧に戻る"
+
 }
