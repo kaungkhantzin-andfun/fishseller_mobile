@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AccountController As AccountController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -56,6 +56,8 @@ Route::get('/deviation-rating', fn() => view('frontend.deviation_rating'))->name
 
 // Authentication Routes
 Route::get('/login', fn() => view('frontend.login'))->name('login');
+Route::get('/register', fn() => view('frontend.registration'))->name('register');
+Route::post('/register', [AccountController::class, 'register'])->name('register_store'); 
 Route::get('/forgot-password', fn() => view('frontend.forgot_password'))->name('password.request');
 
 // Account Routes
