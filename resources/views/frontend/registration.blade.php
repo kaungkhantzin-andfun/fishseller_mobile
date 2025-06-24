@@ -102,6 +102,9 @@
             margin-top: 25px;
             margin-bottom: 15px;
         }
+        .submit-btn:hover {
+            background-color: #555;
+        }
         
         .login-link {
             text-align: center;

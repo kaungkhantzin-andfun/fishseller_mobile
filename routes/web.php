@@ -58,7 +58,7 @@ Route::get('/deviation-rating', fn() => view('frontend.deviation_rating'))->name
 Route::get('/login', fn() => view('frontend.login'))->name('login');
 Route::get('/register', fn() => view('frontend.registration'))->name('register');
 Route::post('/register', [AccountController::class, 'register'])->name('register_store'); 
-Route::get('/forgot-password', fn() => view('frontend.forgot_password'))->name('password.request');
+Route::get('/forgot-password', fn() => view('frontend.forgot_password'))->name('password.forgot');
 
 // Account Routes
 Route::prefix('account')->name('account.')->group(function () {
