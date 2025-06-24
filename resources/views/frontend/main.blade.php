@@ -432,7 +432,7 @@
 
     <!-- Navigation Grid -->
     <div class="nav-grid">
-        <a href="#" class="nav-item">
+        <a href="{{route('home')}}" class="nav-item">
             <i class="fas fa-home nav-icon"></i>
             <span class="nav-text">ホーム</span>
         </a>
@@ -440,7 +440,7 @@
             <i class="fas fa-th-large nav-icon"></i>
             <span class="nav-text">カテゴリ</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="{{route('login')}}" class="nav-item">
             <i class="fas fa-sign-in-alt nav-icon"></i>
             <span class="nav-text">ログイン</span>
         </a>

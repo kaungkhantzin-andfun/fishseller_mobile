@@ -78,6 +78,9 @@
             font-size: 20px;
             display: block;
         }
+        .login-btn:hover {
+            background-color: #444;
+        }
         .register-text {
             text-align: center;
             margin-bottom: 20px;
@@ -175,7 +178,7 @@
         </div>
         
         <div class="register-text">
-            アカウントをお持ちではありませんか? <a href="#" class="register-link">登録</a>
+            アカウントをお持ちではありませんか? <a href="{{route('register')}}" class="register-link">登録</a>
         </div>
         
         <div class="social-login">
