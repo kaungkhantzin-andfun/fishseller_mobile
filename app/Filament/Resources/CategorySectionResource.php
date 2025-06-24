@@ -4,10 +4,12 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Infolists;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use App\Models\CategorySection;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -69,22 +71,64 @@ class CategorySectionResource extends Resource
                     ->relationship('categoryGroup', 'name'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()->disabled(function ($record) {
-                    return $record->categories()->exists();
-                }),
+                Tables\Actions\DeleteAction::make()
+                    ->disabled(fn ($record) => $record->categories()->exists())
+                    ->hidden(fn ($record) => $record->categories()->exists()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->before(function ($records, $action) {
+                        // Check if any record has related categorySections
+                        $hasRelated = $records->some(fn ($record) => $record->categories()->exists());
+        
+                        if ($hasRelated) {
+                            // Notification::make()
+                            //     ->title('Cannot delete')
+                            //     ->body('One or more selected category groups have related category sections.')
+                            //     ->danger()
+                            //     ->send();
+        
+                            // Cancel the delete action
+                            $action->cancel();
+                        }
+                    }),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {   
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name')
+                            ->label(__('name'))
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('slug')
+                            ->label(__('slug'))
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label(__('created at'))
+                            ->dateTime()
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->label(__('updated at'))
+                            ->dateTime()
+                            ->inlineLabel(),
+                        
+                    ]),
+
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CategoriesRelationManager::class,
         ];
     }
 
@@ -93,7 +137,8 @@ class CategorySectionResource extends Resource
         return [
             'index' => Pages\ListCategorySections::route('/'),
             // 'create' => Pages\CreateCategorySection::route('/create'),
-            // 'edit' => Pages\EditCategorySection::route('/{record}/edit'),
+            'edit' => Pages\EditCategorySection::route('/{record}/edit'),
+            'view' => Pages\ViewCategorySection::route('/{record}'),
         ];
     }
 

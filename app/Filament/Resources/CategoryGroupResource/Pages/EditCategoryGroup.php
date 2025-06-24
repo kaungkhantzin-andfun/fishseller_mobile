@@ -13,7 +13,9 @@ class EditCategoryGroup extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->disabled(fn ($record) => $record->categorySections()->exists())
+                ->hidden(fn ($record) => $record->categorySections()->exists()),
         ];
     }
 }

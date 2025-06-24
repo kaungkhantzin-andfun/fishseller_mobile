@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('access_token')->nullable();
             $table->text('refresh_token')->nullable();
             $table->text('expires_at')->nullable();
+            
             $table->timestamps();
         });
     }

@@ -186,6 +186,16 @@
     "subscribes": "Subscribes",
   
     "created at": "Created At",
-    "updated at": "Updated At"
+    "updated at": "Updated At",
+    "deleted at": "Deleted At",
+
+    "click to deactivate": "Click to deactivate",
+    "click to activate": "Click to activate",
+
+    "active": "Active",
+    "inactive": "Inactive",
+
+    "related category section": "Related Category Section",
+    "back to list": "Back To List"
 }
   
