@@ -14,8 +14,8 @@ class EditCategoryGroup extends EditRecord
     {
         return [
             Actions\DeleteAction::make()
-                ->disabled(fn ($record) => $record->categorySections()->exists())
-                ->hidden(fn ($record) => $record->categorySections()->exists()),
+                ->disabled(fn ($record) => $record->categoryHierarchies()->exists())
+                ->hidden(fn ($record) => $record->categoryHierarchies()->exists()),
         ];
     }
 }

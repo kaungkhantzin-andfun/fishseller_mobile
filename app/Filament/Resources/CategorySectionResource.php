@@ -32,11 +32,11 @@ class CategorySectionResource extends Resource
                     ->maxLength(255)
                     ->afterStateUpdated(function ($state, callable $set) {
                         $set('slug', Str::slug($state));
-                    }),
-                Forms\Components\Select::make('category_group_id')
-                    ->label(__('category group'))
-                    ->relationship('categoryGroup', 'name')
-                    ->required(),
+                    })->columnSpan(2),
+                // Forms\Components\Select::make('category_group_id')
+                //     ->label(__('category group'))
+                //     ->relationship('categoryGroup', 'name')
+                //     ->required(),
             ]);
     }
 
@@ -47,10 +47,6 @@ class CategorySectionResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('categoryGroup.name')
-                    ->label(__('category group'))
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('slug'))
                     ->searchable(),
@@ -66,23 +62,21 @@ class CategorySectionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('category_group_id')
-                    ->label(__('category group'))
-                    ->relationship('categoryGroup', 'name'),
+                //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->disabled(fn ($record) => $record->categories()->exists())
-                    ->hidden(fn ($record) => $record->categories()->exists()),
+                    ->disabled(fn ($record) => $record->categoryHierarchies()->exists())
+                    ->hidden(fn ($record) => $record->categoryHierarchies()->exists()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                     ->before(function ($records, $action) {
                         // Check if any record has related categorySections
-                        $hasRelated = $records->some(fn ($record) => $record->categories()->exists());
+                        $hasRelated = $records->some(fn ($record) => $record->categoryHierarchies()->exists());
         
                         if ($hasRelated) {
                             // Notification::make()
@@ -128,7 +122,7 @@ class CategorySectionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CategoriesRelationManager::class,
+            // RelationManagers\CategoriesRelationManager::class,
         ];
     }
 
@@ -137,8 +131,8 @@ class CategorySectionResource extends Resource
         return [
             'index' => Pages\ListCategorySections::route('/'),
             // 'create' => Pages\CreateCategorySection::route('/create'),
-            'edit' => Pages\EditCategorySection::route('/{record}/edit'),
-            'view' => Pages\ViewCategorySection::route('/{record}'),
+            // 'edit' => Pages\EditCategorySection::route('/{record}/edit'),
+            // 'view' => Pages\ViewCategorySection::route('/{record}'),
         ];
     }
 

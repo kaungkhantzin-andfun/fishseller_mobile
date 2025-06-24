@@ -4,49 +4,82 @@ namespace App\Models;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class SubCategory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'category_id',
         'name',
         'slug',
         'status_id',
     ];
 
-    protected static function boot()
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::saving(function ($model) {
+    //         $slug = Str::slug($model->name);
+    //         $originalSlug = $slug;
+    //         $count = 1;
+
+    //         // Ensure slug uniqueness
+    //         while (static::where('slug', $slug)->where('id', '!=', $model->id)->exists()) {
+    //             $slug = $originalSlug . '-' . $count++;
+    //         }
+
+    //         $model->slug = $slug;
+    //     });
+    // }
+
+    public function categories(): HasManyThrough
     {
-        parent::boot();
-
-        static::saving(function ($model) {
-            $slug = Str::slug($model->name);
-            $originalSlug = $slug;
-            $count = 1;
-
-            // Ensure slug uniqueness
-            while (static::where('slug', $slug)->where('id', '!=', $model->id)->exists()) {
-                $slug = $originalSlug . '-' . $count++;
-            }
-
-            $model->slug = $slug;
-        });
+        return $this->hasManyThrough(
+            Category::class,
+            CategoryHierarchy::class,
+            'sub_category_id',     
+            'id',                  
+            'id',                   
+            'category_id'     
+        )->distinct(); 
     }
 
-    public function category()
+    public function categorySections(): HasManyThrough
     {
-        return $this->belongsTo(Category::class);
+        return $this->hasManyThrough(
+            CategorySection::class,
+            CategoryHierarchy::class,
+            'sub_category_id',     
+            'id',                  
+            'id',                   
+            'category_section_id'     
+        )->distinct(); 
     }
 
-    public function status()
+    public function categoryGroups(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            CategoryGroup::class,
+            CategoryHierarchy::class,
+            'sub_category_id',     
+            'id',                  
+            'id',                   
+            'category_group_id'     
+        )->distinct(); 
+    }
+
+    public function categoryHierarchies(): HasMany
+    {
+        return $this->hasMany(CategoryHierarchy::class);
+    }
+
+    public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
-    }
-
-    public function products()
-    {
-        return $this->hasMany(Product::class);
     }
 }

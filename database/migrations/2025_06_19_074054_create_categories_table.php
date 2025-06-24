@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_section_id')->constrained()->restrictOnDelete();
+            // $table->foreignId('category_section_id')->constrained()->restrictOnDelete();
             $table->string('name');
             $table->string('slug');
             $table->softDeletes();

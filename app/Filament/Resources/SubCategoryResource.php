@@ -5,13 +5,17 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Infolists;
+use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\SubCategory;
 use Illuminate\Support\Str;
+use App\Models\CategoryGroup;
+use App\Models\CategorySection;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -34,18 +38,33 @@ class SubCategoryResource extends Resource
                     ->maxLength(255)
                     ->afterStateUpdated(function ($state, callable $set) {
                         $set('slug', Str::slug($state));
-                    })->columnSpan(2),
-                Forms\Components\Select::make('category_id')
-                    ->label(__('category'))
-                    ->relationship('category', 'name')
-                    ->required(),
-                
+                    }),
                 Forms\Components\Select::make('status_id')
                     ->label(__('status'))
                     ->relationship('status', 'name',function($query){
                         $query->whereIn('id',[1,2]);
                     })
                     ->required(),
+                Forms\Components\Grid::make(3)
+                    ->schema([
+                        Forms\Components\Select::make('category_group_id')
+                            ->label(__('category group'))
+                            ->options(CategoryGroup::pluck('name', 'id'))
+                            ->reactive()
+                            ->required(),
+                        Forms\Components\Select::make('category_section_id')
+                            ->label(__('category section'))
+                            ->options(CategorySection::pluck('name', 'id'))
+                            ->reactive()
+                            ->required(),
+                        Forms\Components\Select::make('category_id')
+                            ->label(__('category'))
+                            ->options(Category::pluck('name', 'id'))
+                            ->required(),
+                        
+                    ]),
+                
+                
             ]);
     }
 
@@ -56,10 +75,6 @@ class SubCategoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('category.name')
-                    ->label(__('category'))
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('slug'))
                     ->searchable(),
@@ -84,9 +99,7 @@ class SubCategoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('category_id')
-                    ->label(__('category'))
-                    ->relationship('category', 'name'),
+
                 Tables\Filters\SelectFilter::make('status_id')
                     ->label(__('status'))
                     ->relationship('status', 'name',function($query){
@@ -150,7 +163,7 @@ class SubCategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\ProductsRelationManager::class
+            // RelationManagers\ProductsRelationManager::class
         ];
     }
 
@@ -159,8 +172,8 @@ class SubCategoryResource extends Resource
         return [
             'index' => Pages\ListSubCategories::route('/'),
             // 'create' => Pages\CreateSubCategory::route('/create'),
-            'edit' => Pages\EditSubCategory::route('/{record}/edit'),
-            'view' => Pages\ViewSubCategory::route('/{record}'),
+            // 'edit' => Pages\EditSubCategory::route('/{record}/edit'),
+            // 'view' => Pages\ViewSubCategory::route('/{record}'),
         ];
     }
 
@@ -182,5 +195,15 @@ class SubCategoryResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('sub categories');
+    }
+
+    public static function afterCreate(Form $form, SubCategory $record): void
+    {
+        \App\Models\CategoryHierarchy::create([
+            'sub_category_id' => $record->id,
+            'category_id' => $form->getState()['category_id'],
+            'category_section_id' => $form->getState()['category_section_id'],
+            'category_group_id' => $form->getState()['category_group_id'],
+        ]);
     }
 }

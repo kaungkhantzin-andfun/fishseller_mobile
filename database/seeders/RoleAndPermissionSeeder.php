@@ -12,6 +12,6 @@ class RoleAndPermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        
     }
 }

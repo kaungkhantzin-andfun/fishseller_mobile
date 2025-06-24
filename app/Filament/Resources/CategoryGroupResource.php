@@ -71,15 +71,15 @@ class CategoryGroupResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->disabled(fn ($record) => $record->categorySections()->exists())
-                    ->hidden(fn ($record) => $record->categorySections()->exists()),
+                    ->disabled(fn ($record) => $record->categoryHierarchies()->exists())
+                    ->hidden(fn ($record) => $record->categoryHierarchies()->exists()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                     ->before(function ($records, $action) {
                         // Check if any record has related categorySections
-                        $hasRelated = $records->some(fn ($record) => $record->categorySections()->exists());
+                        $hasRelated = $records->some(fn ($record) => $record->categoryHierarchies()->exists());
         
                         if ($hasRelated) {
                             Notification::make()
@@ -125,7 +125,7 @@ class CategoryGroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CategorySectionsRelationManager::class
+            // RelationManagers\CategorySectionsRelationManager::class
         ];
     }
 
@@ -133,9 +133,9 @@ class CategoryGroupResource extends Resource
     {
         return [
             'index' => Pages\ListCategoryGroups::route('/'),
-            'create' => Pages\CreateCategoryGroup::route('/create'),
-            'edit' => Pages\EditCategoryGroup::route('/{record}/edit'),
-            'view' => Pages\ViewCategoryGroup::route('/{record}'),
+            // 'create' => Pages\CreateCategoryGroup::route('/create'),
+            // 'edit' => Pages\EditCategoryGroup::route('/{record}/edit'),
+            // 'view' => Pages\ViewCategoryGroup::route('/{record}'),
         ];
     }
 
