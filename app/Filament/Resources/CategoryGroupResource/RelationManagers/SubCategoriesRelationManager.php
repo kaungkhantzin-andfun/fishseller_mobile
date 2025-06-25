@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\CategoryResource\RelationManagers;
+namespace App\Filament\Resources\CategoryGroupResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Infolists;
 use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
@@ -36,10 +36,23 @@ class SubCategoriesRelationManager extends RelationManager
             
             Forms\Components\Grid::make(2)
                 ->schema([
-                    Forms\Components\Select::make('category_group_id')
-                        ->label(__('category group'))
-                        ->relationship('categoryGroup', 'name')
-                        ->required(),               
+                    Forms\Components\Select::make('category_section_id')
+                        ->label(__('category section'))
+                        ->relationship('categorySection', 'name')
+                        ->reactive()
+                        ->required(),
+                    Forms\Components\Select::make('category_id')
+                        ->label(__('category'))
+                        ->options(function (callable $get) {
+                            $sectionId = $get('category_section_id');
+                    
+                            if (!$sectionId) {
+                                return [];
+                            }
+                    
+                            return Category::where('category_section_id', $sectionId)->pluck('name', 'id')->toArray();
+                        })
+                        ->required(),                      
                 ]),
             Forms\Components\Toggle::make('status_id')
                 ->label(__('status'))
@@ -60,7 +73,6 @@ class SubCategoriesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('name'))
@@ -69,15 +81,19 @@ class SubCategoriesRelationManager extends RelationManager
                     ->label(__('slug'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('categoryGroup.name')
-                    ->label(__('category group'))
+                Tables\Columns\TextColumn::make('categorySection.name')
+                    ->label(__('category section'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label(__('category'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\IconColumn::make('status.name')
                     ->label(__('status'))
                     ->boolean()
                     ->getStateUsing(fn ($record) => $record->status->name === 'Active')
-                    ->sortable(),
+                    ->sortable(),             
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->label(__('deleted at'))
                     ->dateTime()
@@ -96,9 +112,13 @@ class SubCategoriesRelationManager extends RelationManager
             ])
             ->filters([
 
-                Tables\Filters\SelectFilter::make('category_group_id')
-                    ->label(__('category group'))
-                    ->relationship('categoryGroup', 'name'),
+                Tables\Filters\SelectFilter::make('category_section_id')
+                    ->label(__('category section'))
+                    ->relationship('categorySection', 'name'),
+
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label(__('category'))
+                    ->relationship('category', 'name'),
 
                 Tables\Filters\SelectFilter::make('status_id')
                     ->label(__('status'))
@@ -157,10 +177,6 @@ class SubCategoriesRelationManager extends RelationManager
                             ->label(__('status'))
                             ->boolean()
                             ->getStateUsing(fn ($record) => $record->status->name === 'Active')
-                            ->inlineLabel(),
-                        Infolists\Components\TextEntry::make('created_at')
-                            ->label(__('created at'))
-                            ->dateTime()
                             ->inlineLabel(),
                         Infolists\Components\TextEntry::make('updated_at')
                             ->label(__('updated at'))

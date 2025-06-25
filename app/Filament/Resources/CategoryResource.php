@@ -27,6 +27,8 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
+    protected static ?int $navigationSort = 3;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,13 +37,17 @@ class CategoryResource extends Resource
                     ->label(__('name'))
                     ->required()
                     ->maxLength(255)
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        $set('slug', Str::slug($state));
-                    })->columnSpan(2),
-                // Forms\Components\Select::make('category_section_id')
-                //     ->label(__('category section'))
-                //     ->relationship('categorySection', 'name')
-                //     ->required(),
+                    ->columnSpan(2),
+                Forms\Components\TextInput::make('slug')
+                    ->label(__('slug'))
+                    ->required()
+                    ->maxLength(255)
+                    ->hint(__('use romaji if the name is in Japanese.')),
+                    
+                Forms\Components\Select::make('category_section_id')
+                    ->label(__('category section'))
+                    ->relationship('categorySection', 'name')
+                    ->required(),
             
             ]);
     }
@@ -53,13 +59,14 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('name'))
                     ->searchable(),
-                // Tables\Columns\TextColumn::make('categorySection.name')
-                //     ->label(__('category section'))
-                //     ->numeric()
-                //     ->sortable(),
+                Tables\Columns\TextColumn::make('categorySection.name')
+                    ->label(__('category section'))
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('slug'))
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('created at'))
                     ->dateTime()
@@ -72,16 +79,16 @@ class CategoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // Tables\Filters\SelectFilter::make('category_section_id')
-                //     ->label(__('category section'))
-                //     ->relationship('categorySection', 'name'),
+                Tables\Filters\SelectFilter::make('category_section_id')
+                    ->label(__('category section'))
+                    ->relationship('categorySection', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->disabled(fn ($record) => $record->categoryHierarchies()->exists())
-                    ->hidden(fn ($record) => $record->categoryHierarchies()->exists()),
+                    ->disabled(fn ($record) => $record->subCategories()->exists())
+                    ->hidden(fn ($record) => $record->subCategories()->exists()),
                 
             ])
             ->bulkActions([
@@ -89,7 +96,7 @@ class CategoryResource extends Resource
                     Tables\Actions\DeleteBulkAction::make()
                         ->before(function ($records, $action) {
                             // Check if any record has related categorySections
-                            $hasRelated = $records->some(fn ($record) => $record->categoryHierarchies()->exists());
+                            $hasRelated = $records->some(fn ($record) => $record->subCategories()->exists());
             
                             if ($hasRelated) {
                                 Notification::make()
@@ -115,9 +122,12 @@ class CategoryResource extends Resource
                         Infolists\Components\TextEntry::make('name')
                             ->label(__('name'))
                             ->inlineLabel(),
-                        Infolists\Components\TextEntry::make('slug')
-                            ->label(__('slug'))
+                        Infolists\Components\TextEntry::make('categorySection.name')
+                            ->label(__('category section'))
                             ->inlineLabel(),
+                        // Infolists\Components\TextEntry::make('slug')
+                        //     ->label(__('slug'))
+                        //     ->inlineLabel(),
                         Infolists\Components\TextEntry::make('created_at')
                             ->label(__('created at'))
                             ->dateTime()
@@ -134,7 +144,7 @@ class CategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // RelationManagers\SubCategoriesRelationManager::class,
+            RelationManagers\SubCategoriesRelationManager::class,
         ];
     }
 
@@ -143,8 +153,8 @@ class CategoryResource extends Resource
         return [
             'index' => Pages\ListCategories::route('/'),
             // 'create' => Pages\CreateCategory::route('/create'),
-            // 'edit' => Pages\EditCategory::route('/{record}/edit'),
-            // 'view' => Pages\ViewCategory::route('/{record}'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'view' => Pages\ViewCategory::route('/{record}'),
 
         ];
     }

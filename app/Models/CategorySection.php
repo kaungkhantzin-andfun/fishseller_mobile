@@ -35,44 +35,60 @@ class CategorySection extends Model
     //     });
     // }
 
+    // public function categoryGroups(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(
+    //         CategoryGroup::class,
+    //         CategoryHierarchy::class,
+    //         'category_section_id',     
+    //         'id',                  
+    //         'id',                   
+    //         'category_group_id'     
+    //     )->distinct(); 
+    // }
+
+    // public function categories(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(
+    //         Category::class,
+    //         CategoryHierarchy::class,
+    //         'category_section_id',     
+    //         'id',                  
+    //         'id',                   
+    //         'category_id'     
+    //     )->distinct(); 
+    // }
+
+    // public function subCategories(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(
+    //         SubCategory::class,
+    //         CategoryHierarchy::class,
+    //         'category_section_id',     
+    //         'id',                  
+    //         'id',                   
+    //         'sub_category_id'     
+    //     )->distinct(); 
+    // }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
     public function categoryGroups(): HasManyThrough
     {
-        return $this->hasManyThrough(
-            CategoryGroup::class,
-            CategoryHierarchy::class,
-            'category_section_id',     
-            'id',                  
-            'id',                   
-            'category_group_id'     
-        )->distinct(); 
+        return $this->hasManyThrough(CategoryGroup::class, SubCategory::class)->distinct();
     }
 
-    public function categories(): HasManyThrough
+    public function subCategories(): HasMany
     {
-        return $this->hasManyThrough(
-            Category::class,
-            CategoryHierarchy::class,
-            'category_section_id',     
-            'id',                  
-            'id',                   
-            'category_id'     
-        )->distinct(); 
+        return $this->hasMany(SubCategory::class);
     }
 
-    public function subCategories(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            SubCategory::class,
-            CategoryHierarchy::class,
-            'category_section_id',     
-            'id',                  
-            'id',                   
-            'sub_category_id'     
-        )->distinct(); 
-    }
 
-    public function categoryHierarchies(): HasMany
-    {
-        return $this->hasMany(CategoryHierarchy::class);
-    }
+    // public function categoryHierarchies(): HasMany
+    // {
+    //     return $this->hasMany(CategoryHierarchy::class);
+    // }
 }

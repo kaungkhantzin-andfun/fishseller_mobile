@@ -74,7 +74,7 @@ class CategorySectionsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()
                         ->before(function ($records, $action) {
                             // Check if any record has related categorySections
-                            $hasRelated = $records->some(fn ($record) => $record->categorySections()->exists());
+                            $hasRelated = $records->some(fn ($record) => $record->categories()->exists());
             
                             if ($hasRelated) {
                                 Notification::make()

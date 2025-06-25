@@ -7,6 +7,8 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,10 +26,12 @@ class CategoriesRelationManager extends RelationManager
                 Forms\Components\TextInput::make('name')
                     ->label(__('name'))
                     ->required()
+                    ->maxLength(255),
+                    Forms\Components\TextInput::make('slug')
+                    ->label(__('slug'))
+                    ->required()
                     ->maxLength(255)
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        $set('slug', Str::slug($state));
-                    }),
+                    ->hint(__('use romaji if the name is in Japanese.')),
             ]);
     }
 
@@ -42,7 +46,8 @@ class CategoriesRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('slug'))
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('created at'))
                     ->dateTime()
@@ -61,6 +66,7 @@ class CategoriesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->disabled(fn ($record) => $record->subCategories()->exists())
@@ -85,6 +91,31 @@ class CategoriesRelationManager extends RelationManager
                             }
                         }),
                 ]),
+            ]);
+    }
+
+    public function infolist(Infolist $infolist): Infolist
+    {   
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name')
+                            ->label(__('name'))
+                            ->inlineLabel(),
+                        // Infolists\Components\TextEntry::make('slug')
+                        //     ->label(__('slug'))
+                        //     ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label(__('created at'))
+                            ->dateTime()
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->label(__('updated at'))
+                            ->dateTime()
+                            ->inlineLabel(),
+                    ]),
+
             ]);
     }
 

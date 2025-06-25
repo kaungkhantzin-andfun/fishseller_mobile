@@ -16,6 +16,9 @@ class SubCategory extends Model
     protected $fillable = [
         'name',
         'slug',
+        'category_group_id',
+        'category_section_id',
+        'category_id',
         'status_id',
     ];
 
@@ -37,49 +40,29 @@ class SubCategory extends Model
     //     });
     // }
 
-    public function categories(): HasManyThrough
+    public function categoryGroup(): BelongsTo
     {
-        return $this->hasManyThrough(
-            Category::class,
-            CategoryHierarchy::class,
-            'sub_category_id',     
-            'id',                  
-            'id',                   
-            'category_id'     
-        )->distinct(); 
+        return $this->belongsTo(CategoryGroup::class);
     }
 
-    public function categorySections(): HasManyThrough
+    public function categorySection(): BelongsTo
     {
-        return $this->hasManyThrough(
-            CategorySection::class,
-            CategoryHierarchy::class,
-            'sub_category_id',     
-            'id',                  
-            'id',                   
-            'category_section_id'     
-        )->distinct(); 
+        return $this->belongsTo(CategorySection::class);
     }
 
-    public function categoryGroups(): HasManyThrough
+    public function category(): BelongsTo
     {
-        return $this->hasManyThrough(
-            CategoryGroup::class,
-            CategoryHierarchy::class,
-            'sub_category_id',     
-            'id',                  
-            'id',                   
-            'category_group_id'     
-        )->distinct(); 
-    }
-
-    public function categoryHierarchies(): HasMany
-    {
-        return $this->hasMany(CategoryHierarchy::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
 }

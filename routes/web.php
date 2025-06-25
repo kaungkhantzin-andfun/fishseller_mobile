@@ -55,6 +55,7 @@ Route::get('/deviation-ranking', fn() => view('frontend.deviation_ranking'))->na
 Route::get('/deviation-rating', fn() => view('frontend.deviation_rating'))->name('deviation.rating');
 
 // Authentication Routes
+
 Route::get('/login', fn() => view('frontend.login'))->name('login');
 Route::get('/register', fn() => view('frontend.registration'))->name('register');
 Route::post('/register', [AccountController::class, 'register'])->name('register_store'); 

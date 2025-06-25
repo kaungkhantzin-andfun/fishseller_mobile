@@ -22,6 +22,8 @@ class CategorySectionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-queue-list';
 
+    protected static ?int $navigationSort = 2;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -29,10 +31,15 @@ class CategorySectionResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label(__('name'))
                     ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('slug')
+                    ->label(__('slug'))
+                    ->required()
                     ->maxLength(255)
+                    ->hint(__('use romaji if the name is in Japanese.'))
                     ->afterStateUpdated(function ($state, callable $set) {
                         $set('slug', Str::slug($state));
-                    })->columnSpan(2),
+                    }),
                 // Forms\Components\Select::make('category_group_id')
                 //     ->label(__('category group'))
                 //     ->relationship('categoryGroup', 'name')
@@ -49,7 +56,8 @@ class CategorySectionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('slug'))
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('created at'))
                     ->dateTime()
@@ -68,15 +76,15 @@ class CategorySectionResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->disabled(fn ($record) => $record->categoryHierarchies()->exists())
-                    ->hidden(fn ($record) => $record->categoryHierarchies()->exists()),
+                    ->disabled(fn ($record) => $record->categories()->exists())
+                    ->hidden(fn ($record) => $record->categories()->exists()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                     ->before(function ($records, $action) {
                         // Check if any record has related categorySections
-                        $hasRelated = $records->some(fn ($record) => $record->categoryHierarchies()->exists());
+                        $hasRelated = $records->some(fn ($record) => $record->categories()->exists());
         
                         if ($hasRelated) {
                             // Notification::make()
@@ -102,9 +110,9 @@ class CategorySectionResource extends Resource
                         Infolists\Components\TextEntry::make('name')
                             ->label(__('name'))
                             ->inlineLabel(),
-                        Infolists\Components\TextEntry::make('slug')
-                            ->label(__('slug'))
-                            ->inlineLabel(),
+                        // Infolists\Components\TextEntry::make('slug')
+                        //     ->label(__('slug'))
+                        //     ->inlineLabel(),
                         Infolists\Components\TextEntry::make('created_at')
                             ->label(__('created at'))
                             ->dateTime()
@@ -122,7 +130,7 @@ class CategorySectionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // RelationManagers\CategoriesRelationManager::class,
+            RelationManagers\CategoriesRelationManager::class,
         ];
     }
 
@@ -131,8 +139,8 @@ class CategorySectionResource extends Resource
         return [
             'index' => Pages\ListCategorySections::route('/'),
             // 'create' => Pages\CreateCategorySection::route('/create'),
-            // 'edit' => Pages\EditCategorySection::route('/{record}/edit'),
-            // 'view' => Pages\ViewCategorySection::route('/{record}'),
+            'edit' => Pages\EditCategorySection::route('/{record}/edit'),
+            'view' => Pages\ViewCategorySection::route('/{record}'),
         ];
     }
 

@@ -1238,16 +1238,16 @@ class SubCategorySeeder extends Seeder
                             // Create or retrieve SubCategory
                             $subcategory = SubCategory::firstOrCreate(
                                 ['name' => $subcategory_name],
-                                ['name' => $subcategory_name, 'slug' => $slug, 'status_id' => 1]
+                                [
+                                    'name' => $subcategory_name, 
+                                    'slug' => $slug,
+                                    'category_group_id' => $category_group->id,
+                                    'category_section_id' => $category_section->id,
+                                    'category_id' => $category->id,
+                                    'status_id' => 1
+                                ]
                             );
 
-                            // Create CategoryHierarchy
-                            CategoryHierarchy::firstOrCreate([
-                                'sub_category_id' => $subcategory->id,
-                                'category_id' => $category->id,
-                                'category_section_id' => $category_section->id,
-                                'category_group_id' => $category_group->id,
-                            ]);
                         }
                     }
                 }

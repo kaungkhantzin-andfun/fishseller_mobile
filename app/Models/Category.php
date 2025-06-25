@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,8 @@ class Category extends Model
 {
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'category_section_id',
     ];
 
     // protected static function boot()
@@ -37,36 +39,18 @@ class Category extends Model
     {
         return $this->hasManyThrough(
             CategoryGroup::class,
-            CategoryHierarchy::class,
-            'category_id',     
-            'id',                  
-            'id',                   
-            'category_group_id'     
+            SubCategory::class
         )->distinct(); 
     }
 
-    public function categorySections(): HasManyThrough
+    public function categorySection(): BelongsTo
     {
-        return $this->hasManyThrough(
-            CategorySection::class,
-            CategoryHierarchy::class,
-            'category_id',     
-            'id',                  
-            'id',                   
-            'category_section_id'     
-        )->distinct(); 
+        return $this->belongsTo(CategorySection::class);
     }
 
-    public function subCategories(): HasManyThrough
+    public function subCategories(): HasMany
     {
-        return $this->hasManyThrough(
-            SubCategory::class,
-            CategoryHierarchy::class,
-            'category_id',     
-            'id',                  
-            'id',                   
-            'sub_category_id'     
-        )->distinct(); 
+        return $this->hasMany(SubCategory::class);
     }
 
 

@@ -12,7 +12,7 @@ class CategoryHierarchy extends Model
     protected $fillable = [
         'sub_category_id',
         'category_id',
-        'category_section_id',
+        // 'category_section_id',
         'category_group_id',
     ];
 
@@ -26,10 +26,6 @@ class CategoryHierarchy extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function categorySection()
-    {
-        return $this->belongsTo(CategorySection::class);
-    }
 
     public function categoryGroup()
     {

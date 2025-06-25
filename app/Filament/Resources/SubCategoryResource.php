@@ -28,6 +28,8 @@ class SubCategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 4;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,35 +37,49 @@ class SubCategoryResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label(__('name'))
                     ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('slug')
+                    ->label(__('slug'))
+                    ->required()
                     ->maxLength(255)
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        $set('slug', Str::slug($state));
-                    }),
-                Forms\Components\Select::make('status_id')
-                    ->label(__('status'))
-                    ->relationship('status', 'name',function($query){
-                        $query->whereIn('id',[1,2]);
-                    })
-                    ->required(),
+                    ->hint(__('use romaji if the name is in Japanese.')),
+                
                 Forms\Components\Grid::make(3)
                     ->schema([
                         Forms\Components\Select::make('category_group_id')
                             ->label(__('category group'))
-                            ->options(CategoryGroup::pluck('name', 'id'))
-                            ->reactive()
+                            ->relationship('categoryGroup', 'name')
                             ->required(),
                         Forms\Components\Select::make('category_section_id')
                             ->label(__('category section'))
-                            ->options(CategorySection::pluck('name', 'id'))
+                            ->relationship('categorySection', 'name')
                             ->reactive()
                             ->required(),
                         Forms\Components\Select::make('category_id')
                             ->label(__('category'))
-                            ->options(Category::pluck('name', 'id'))
-                            ->required(),
+                            ->options(function (callable $get) {
+                                $sectionId = $get('category_section_id');
                         
+                                if (!$sectionId) {
+                                    return [];
+                                }
+                        
+                                return Category::where('category_section_id', $sectionId)->pluck('name', 'id')->toArray();
+                            })
+                            ->required(),                      
                     ]),
-                
+                Forms\Components\Toggle::make('status_id')
+                    ->label(__('status'))
+                    ->default(1) // true means status_id = 1
+                    ->required()
+                    ->afterStateHydrated(function ($component, $state) {
+                        // Convert from DB value to boolean for the toggle
+                        $component->state($state === 1);
+                    })
+                    ->dehydrateStateUsing(function ($state) {
+                        // Convert from boolean toggle to status_id
+                        return $state ? 1 : 2;
+                    })
                 
             ]);
     }
@@ -77,11 +93,25 @@ class SubCategoryResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('slug'))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status.name')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('categoryGroup.name')
+                    ->label(__('category group'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('categorySection.name')
+                    ->label(__('category section'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label(__('category'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\IconColumn::make('status.name')
                     ->label(__('status'))
-                    ->formatStateUsing(fn ($state) => $state === 'Active' ? '🟢 ' . __('active') : '🔴 ' . __('inactive'))
-                    ->sortable(),               
+                    ->boolean()
+                    ->getStateUsing(fn ($record) => $record->status->name === 'Active')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->label(__('deleted at'))
                     ->dateTime()
@@ -99,6 +129,18 @@ class SubCategoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+
+                Tables\Filters\SelectFilter::make('category_group_id')
+                    ->label(__('category group'))
+                    ->relationship('categoryGroup', 'name'),
+
+                Tables\Filters\SelectFilter::make('category_section_id')
+                    ->label(__('category section'))
+                    ->relationship('categorySection', 'name'),
+
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label(__('category'))
+                    ->relationship('category', 'name'),
 
                 Tables\Filters\SelectFilter::make('status_id')
                     ->label(__('status'))
@@ -144,8 +186,19 @@ class SubCategoryResource extends Resource
                         Infolists\Components\TextEntry::make('name')
                             ->label(__('name'))
                             ->inlineLabel(),
-                        Infolists\Components\TextEntry::make('slug')
-                            ->label(__('slug'))
+                        Infolists\Components\TextEntry::make('categoryGroup.name')
+                            ->label(__('category group'))
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('categorySection.name')
+                            ->label(__('category section'))
+                            ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('category.name')
+                            ->label(__('category'))
+                            ->inlineLabel(),
+                        Infolists\Components\IconEntry::make('status.name')
+                            ->label(__('status'))
+                            ->boolean()
+                            ->getStateUsing(fn ($record) => $record->status->name === 'Active')
                             ->inlineLabel(),
                         Infolists\Components\TextEntry::make('created_at')
                             ->label(__('created at'))

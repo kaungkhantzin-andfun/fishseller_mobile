@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class CategoryGroup extends Model
 {
@@ -33,42 +34,31 @@ class CategoryGroup extends Model
     // }
 
 
-    public function categorySections(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            CategorySection::class,
-            CategoryHierarchy::class,
-            'category_group_id',     
-            'id',                  
-            'id',                   
-            'category_section_id'     
-        )->distinct(); 
-    }
 
     public function categories(): HasManyThrough
     {
         return $this->hasManyThrough(
             Category::class,
-            CategoryHierarchy::class,
-            'category_group_id',     
-            'id',                  
-            'id',                   
-            'category_id'     
-        )->distinct(); 
+            SubCategory::class,
+           )->distinct(); 
     }
 
-    public function subCategories(): HasManyThrough
+    public function categorySections(): HasManyThrough
     {
         return $this->hasManyThrough(
+            CategorySection::class, 
             SubCategory::class,
-            CategoryHierarchy::class,
-            'category_group_id',     
-            'id',                  
-            'id',                   
-            'sub_category_id'     
-        )->distinct(); 
+            'category_group_id',
+            'id',
+            'id',
+            'category_section_id'
+        )->distinct();
     }
-
+    
+    public function subCategories(): HasMany
+    {
+        return $this->hasMany(SubCategory::class);
+    }
     public function categoryHierarchies(): HasMany
     {
         return $this->hasMany(CategoryHierarchy::class);
